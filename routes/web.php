@@ -34,6 +34,11 @@ Route::middleware(['auth', 'verificar.rol:postulante'])->prefix('postulante')->n
     Route::post('/pago/confirmar', [Postulante\PagoController::class, 'confirmar'])->name('pago.confirmar');
     Route::post('/pago/simular', [Postulante\PagoController::class, 'simularPago'])->name('pago.simular');
 
+    // Requisitos (subida de documentos)
+    Route::get('/requisitos', [Postulante\RequisitoController::class, 'index'])->name('requisitos');
+    Route::post('/requisitos/titulo', [Postulante\RequisitoController::class, 'subirTitulo'])->name('requisitos.titulo');
+    Route::post('/requisitos/libreta', [Postulante\RequisitoController::class, 'subirLibreta'])->name('requisitos.libreta');
+
     // Notas y resultados
     Route::get('/notas', [Postulante\ResultadoController::class, 'misNotas'])->name('notas');
     Route::get('/resultados', [Postulante\ResultadoController::class, 'misResultados'])->name('resultados');

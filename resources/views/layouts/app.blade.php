@@ -76,6 +76,9 @@
                         <a href="{{ route('postulante.dashboard') }}" class="nav-link {{ request()->routeIs('postulante.dashboard') ? 'active' : '' }}">
                             <span class="icon">🏠</span> Mi Panel
                         </a>
+                        <a href="{{ route('postulante.requisitos') }}" class="nav-link {{ request()->routeIs('postulante.requisitos') ? 'active' : '' }}">
+                            <span class="icon">📄</span> Requisitos
+                        </a>
                         <a href="{{ route('postulante.pago') }}" class="nav-link {{ request()->routeIs('postulante.pago') ? 'active' : '' }}">
                             <span class="icon">💳</span> Pago
                         </a>

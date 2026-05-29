@@ -21,6 +21,8 @@ class Postulante extends Model
         'id_carrera_segunda',
         'id_grupo',
         'id_gestion',
+        'archivo_titulo_bachiller',
+        'archivo_libreta',
     ];
 
     protected $casts = [

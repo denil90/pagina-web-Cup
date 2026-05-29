@@ -32,6 +32,34 @@
 <div class="card mt-3">
     <div class="card-header"><h2>Verificación de Requisitos</h2></div>
     <div class="card-body">
+        {{-- Documentos subidos por el postulante --}}
+        @if($postulante->archivo_titulo_bachiller || $postulante->archivo_libreta)
+        <div style="margin-bottom: 20px;">
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;"><strong>Documentos subidos por el postulante:</strong></p>
+            <div class="btn-group">
+                @if($postulante->archivo_titulo_bachiller)
+                    <a href="{{ asset('storage/' . $postulante->archivo_titulo_bachiller) }}" target="_blank" class="btn btn-info btn-sm">
+                        📜 Ver Título de Bachiller
+                    </a>
+                @else
+                    <span class="badge badge-warning">Título de Bachiller: No subido</span>
+                @endif
+                @if($postulante->archivo_libreta)
+                    <a href="{{ asset('storage/' . $postulante->archivo_libreta) }}" target="_blank" class="btn btn-info btn-sm">
+                        📋 Ver Libreta de Último Año
+                    </a>
+                @else
+                    <span class="badge badge-warning">Libreta: No subida</span>
+                @endif
+            </div>
+        </div>
+        @else
+        <div class="alert alert-warning" style="margin-bottom: 16px;">
+            El postulante aún no ha subido ningún documento.
+        </div>
+        @endif
+
+        {{-- Formulario de verificación del admin --}}
         <form method="POST" action="{{ route('admin.postulantes.requisitos', $postulante->id_postulante) }}">
             @csrf @method('PUT')
             <div class="form-row">
@@ -39,14 +67,14 @@
                     <label class="form-check">
                         <input type="hidden" name="titulo_bachiller" value="0">
                         <input type="checkbox" name="titulo_bachiller" value="1" {{ $postulante->titulo_bachiller ? 'checked' : '' }}>
-                        Título de Bachiller
+                        Título de Bachiller verificado ✅
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check">
                         <input type="hidden" name="libreta_de_ultimo_anio" value="0">
                         <input type="checkbox" name="libreta_de_ultimo_anio" value="1" {{ $postulante->libreta_de_ultimo_anio ? 'checked' : '' }}>
-                        Libreta de Último Año
+                        Libreta de Último Año verificada ✅
                     </label>
                 </div>
             </div>

@@ -29,6 +29,11 @@ class PagoController extends Controller
     {
         try {
             $postulante = Auth::user()->postulante;
+
+            if (!$postulante->cumpleRequisitos()) {
+                return back()->with('error', 'No puedes realizar el pago hasta que el administrador apruebe tus requisitos.');
+            }
+
             $this->pagoService->crearPagoPendiente($postulante->id_postulante);
             return back()->with('success', 'Pago pendiente creado. Proceda con PayPal.');
         } catch (\RuntimeException $e) {
@@ -47,6 +52,11 @@ class PagoController extends Controller
 
         try {
             $postulante = Auth::user()->postulante;
+
+            if (!$postulante->cumpleRequisitos()) {
+                return response()->json(['success' => false, 'message' => 'Requisitos no aprobados.'], 403);
+            }
+
             $this->pagoService->confirmarPago($postulante->id_postulante, $request->paypal_order_id);
 
             return response()->json(['success' => true, 'message' => 'Pago confirmado exitosamente.']);
@@ -66,6 +76,11 @@ class PagoController extends Controller
 
         try {
             $postulante = Auth::user()->postulante;
+
+            if (!$postulante->cumpleRequisitos()) {
+                return back()->with('error', 'No puedes realizar el pago hasta que el administrador apruebe tus requisitos.');
+            }
+
             $this->pagoService->crearPagoPendiente($postulante->id_postulante);
             $this->pagoService->confirmarPago($postulante->id_postulante, 'TEST-' . uniqid());
 

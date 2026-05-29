@@ -1,5 +1,10 @@
 -- ==========================================================
 -- BASE DE DATOS: Sistema CUP - Curso Preuniversitario FIC
+-- Motor: PostgreSQL
+-- ==========================================================
+
+-- ==========================================================
+-- TABLAS BASE
 -- ==========================================================
 
 CREATE TABLE usuario (
@@ -86,13 +91,22 @@ CREATE TABLE postulante (
     id_postulante INT PRIMARY KEY REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     colegio_procedencia VARCHAR(150),
     ciudad VARCHAR(100),
-    titulo_bachiller BOOLEAN,
-    libreta_de_ultimo_anio BOOLEAN,
+    -- Campos de verificación de requisitos (aprobados por el administrador)
+    titulo_bachiller BOOLEAN DEFAULT FALSE,
+    libreta_de_ultimo_anio BOOLEAN DEFAULT FALSE,
+    -- Rutas de archivos PDF subidos por el postulante (storage/app/public/requisitos/)
+    archivo_titulo_bachiller VARCHAR(255) DEFAULT NULL,
+    archivo_libreta VARCHAR(255) DEFAULT NULL,
+    -- Relaciones académicas
     id_carrera_primera INT REFERENCES carrera(id) ON DELETE SET NULL,
     id_carrera_segunda INT REFERENCES carrera(id) ON DELETE SET NULL,
     id_grupo INT REFERENCES grupo(id_grupo) ON DELETE SET NULL,
     id_gestion INT REFERENCES gestion(id_gestion) ON DELETE SET NULL
 );
+
+-- ==========================================================
+-- TABLAS DE RELACIÓN
+-- ==========================================================
 
 CREATE TABLE docente_grupo (
     id SERIAL PRIMARY KEY,
@@ -135,19 +149,20 @@ CREATE TABLE pago (
 -- TRIGGERS
 -- ==========================================================
 
--- Control de Cupos por Grupo
+-- 1. Control de Cupos por Grupo
+-- Impide inscribir a un postulante en un grupo que ya alcanzó su capacidad máxima.
 CREATE OR REPLACE FUNCTION fn_verificar_cupo_grupo()
 RETURNS TRIGGER AS $$
 DECLARE
     v_capacidad_maxima INT;
     v_actuales_inscritos INT;
 BEGIN
-    SELECT capacidad_maxima INTO v_capacidad_maxima
-    FROM grupo WHERE id_grupo = NEW.id_grupo;
-
     IF NEW.id_grupo IS NULL THEN
         RETURN NEW;
     END IF;
+
+    SELECT capacidad_maxima INTO v_capacidad_maxima
+    FROM grupo WHERE id_grupo = NEW.id_grupo;
 
     SELECT COUNT(*) INTO v_actuales_inscritos
     FROM postulante WHERE id_grupo = NEW.id_grupo;
@@ -166,7 +181,8 @@ BEFORE INSERT OR UPDATE OF id_grupo ON postulante
 FOR EACH ROW
 EXECUTE FUNCTION fn_verificar_cupo_grupo();
 
--- Validar Requisitos antes de Asignar Grupo
+-- 2. Validar Requisitos antes de Asignar Grupo
+-- No se puede asignar grupo si el admin no ha aprobado ambos requisitos (titulo_bachiller y libreta).
 CREATE OR REPLACE FUNCTION fn_verificar_requisitos_postulante()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -186,7 +202,35 @@ BEFORE INSERT OR UPDATE OF id_grupo, titulo_bachiller, libreta_de_ultimo_anio ON
 FOR EACH ROW
 EXECUTE FUNCTION fn_verificar_requisitos_postulante();
 
--- Limitar Carga Horaria del Docente (Máx 5 grupos, sin cruces)
+-- 3. Validar Requisitos antes de Registrar Pago
+-- No se permite crear un pago si el postulante no tiene ambos requisitos aprobados por el admin.
+CREATE OR REPLACE FUNCTION fn_verificar_requisitos_para_pago()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_titulo BOOLEAN;
+    v_libreta BOOLEAN;
+BEGIN
+    SELECT titulo_bachiller, libreta_de_ultimo_anio
+    INTO v_titulo, v_libreta
+    FROM postulante
+    WHERE id_postulante = NEW.id_postulante;
+
+    IF v_titulo IS NULL OR v_titulo = FALSE
+       OR v_libreta IS NULL OR v_libreta = FALSE THEN
+        RAISE EXCEPTION 'Error: El postulante con ID % no tiene los requisitos aprobados por el administrador. No se puede registrar el pago.',
+            NEW.id_postulante;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_verificar_requisitos_para_pago
+BEFORE INSERT ON pago
+FOR EACH ROW
+EXECUTE FUNCTION fn_verificar_requisitos_para_pago();
+
+-- 4. Limitar Carga Horaria del Docente (Máx 5 grupos, sin cruces de horario)
 CREATE OR REPLACE FUNCTION fn_validar_restricciones_docente()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -224,7 +268,7 @@ BEFORE INSERT ON docente_grupo
 FOR EACH ROW
 EXECUTE FUNCTION fn_validar_restricciones_docente();
 
--- Cálculo Automático de Promedios
+-- 5. Cálculo Automático de Promedios y Estado de Notas
 CREATE OR REPLACE FUNCTION fn_calcular_promedio_notas()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -263,6 +307,9 @@ EXECUTE FUNCTION fn_calcular_promedio_notas();
 
 -- ==========================================================
 -- PROCEDIMIENTO ALMACENADO: Admisión Final
+-- Procesa la admisión de todos los postulantes de una gestión.
+-- Asigna cupos por promedio descendente, primero intenta primera
+-- opción de carrera, luego segunda opción si no hay cupo.
 -- ==========================================================
 CREATE OR REPLACE PROCEDURE pr_procesar_admision_cup(p_id_gestion INT)
 AS $$
