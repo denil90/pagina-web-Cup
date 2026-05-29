@@ -39,6 +39,9 @@ WORKDIR /var/www/html
 # 7. Copiar los archivos de la aplicación
 COPY . .
 
+# Crear un archivo .env temporal para que los comandos artisan no fallen durante el build
+RUN cp .env.example .env
+
 # 8. Instalar dependencias de PHP (sin paquetes de desarrollo)
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
@@ -47,11 +50,17 @@ RUN npm install
 RUN npm run build
 
 # 10. Configurar permisos para las carpetas críticas
+# Asegurarse de que las carpetas existan primero
+RUN mkdir -p /var/www/html/storage/app/public /var/www/html/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 11. Crear el enlace simbólico del storage
+# 11. Generar la key de la app y crear el enlace simbólico del storage
+RUN php artisan key:generate
 RUN php artisan storage:link
+
+# Eliminar el .env temporal (Railway inyectará las variables reales en tiempo de ejecución)
+RUN rm .env
 
 # Exponer el puerto 80
 EXPOSE 80
