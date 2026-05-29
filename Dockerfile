@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 # 1. Instalar dependencias del sistema requeridas por Laravel y PostgreSQL
 RUN apt-get update && apt-get install -y \
