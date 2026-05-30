@@ -33,7 +33,9 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-RUN a2enmod rewrite
+# Prevenir el error "More than one MPM loaded" deshabilitando los MPM conflictivos
+RUN a2dismod mpm_event mpm_worker || true
+RUN a2enmod rewrite mpm_prefork
 
 # 4. Aumentar límites para subida de PDFs (20MB)
 RUN echo "upload_max_filesize = 20M" > /usr/local/etc/php/conf.d/uploads.ini \
