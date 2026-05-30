@@ -1,106 +1,66 @@
 # Sistema CUP - Curso Preuniversitario FIC
 
-Sistema web integral para la gestión de inscripciones, control de pagos (vía PayPal), revisión de requisitos documentales, y publicación de notas para postulantes del Curso Universitario Preuniversitario (CUP).
+Bienvenido al sistema web integral para la gestión de inscripciones, control de pagos y administración del Curso Universitario Preuniversitario (CUP). Este proyecto está construido con **Laravel 13**, enfocado en una experiencia de usuario moderna y una arquitectura sólida basada en roles.
 
-## 📋 Requisitos Previos
-
-- **PHP** >= 8.4
-- **Composer** (Gestor de dependencias de PHP)
-- **Node.js** y **NPM** (Para compilar los estilos de la interfaz)
-- **PostgreSQL** (Motor de Base de datos)
+✨ **Características Principales**
+- **Diseño Premium:** Interfaz moderna, responsiva y estilizada con CSS nativo y sistema de variables.
+- **Gestión por Roles:** Vistas completamente diferenciadas para Administradores, Postulantes y Docentes.
+- **Validación Estricta:** Bloqueos a nivel de base de datos (PostgreSQL) mediante *Triggers* para evitar saltarse pasos (ej. no pagar sin subir PDFs).
+- **Pasarela Integrada:** Pagos automáticos utilizando la API de PayPal (Sandbox/Producción).
+- **Subida de Archivos:** Gestión segura de PDFs para revisión de Título de Bachiller y Libreta.
 
 ---
 
-## 💻 Instalación Local (Entorno de Desarrollo)
+## 🚀 Guía de Instalación Local
+Si acabas de clonar el repositorio, sigue estos pasos para configurar tu entorno de desarrollo:
 
-Sigue estos pasos para levantar el proyecto en tu propia computadora:
-
-### 1. Clonar el proyecto e instalar dependencias
+### 1. Instalar dependencias
+Asegúrate de tener PHP (>= 8.4) y Composer instalados. Luego ejecuta:
 ```bash
-git clone https://github.com/denil90/pagina-web-Cup.git
-cd pagina-web-Cup
-
-# Instalar dependencias del backend (Laravel)
 composer install
-
-# Instalar dependencias del frontend y compilar estilos
 npm install
 npm run build
 ```
 
-### 2. Configurar Variables de Entorno
-Crea tu archivo de configuración basado en el ejemplo:
+### 2. Configurar el archivo de entorno
+Copia el archivo de ejemplo y configura tus credenciales:
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
-Abre el archivo `.env` recién creado en tu editor de texto y configura tu conexión a PostgreSQL y tus credenciales de PayPal:
-```ini
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=escuela
-DB_USERNAME=postgres
-DB_PASSWORD=tu_contraseña
+*Nota: Abre el archivo `.env` y ajusta `DB_CONNECTION=pgsql`, así como `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` según tu configuración de PostgreSQL. También añade tu `PAYPAL_CLIENT_ID`.*
 
-PAYPAL_CLIENT_ID=TU_CLIENT_ID_AQUI
-PAYPAL_MODE=sandbox
-```
+### 3. Configurar la Base de Datos (Estructura)
+Este proyecto utiliza un archivo SQL puro con funciones y triggers en lugar de migraciones estándar.
+1. Crea una base de datos vacía (ej. `escuela`) en PostgreSQL.
+2. Ejecuta todo el contenido del archivo `database/sql/database.sql` en tu gestor (pgAdmin, DBeaver, etc).
 
-### 3. Configurar la Base de Datos
-Este proyecto utiliza un archivo SQL estructurado con *triggers* avanzados en lugar de usar migraciones estándar de Laravel.
-1. Entra a tu gestor de base de datos (pgAdmin, DBeaver, etc.) y crea una base de datos vacía (ej. `escuela`).
-2. Abre y ejecuta todo el contenido del archivo `database/sql/database.sql` en esa base de datos.
-3. Para insertar datos de prueba iniciales (carreras, administrador, etc.), ejecuta en tu terminal:
+### 4. Poblar datos iniciales y enlazar storage
 ```bash
 php artisan db:seed
-```
-
-### 4. Habilitar la subida de archivos (PDFs)
-Debes crear un acceso directo para que los archivos subidos sean públicos:
-```bash
 php artisan storage:link
 ```
 
-### 5. Iniciar el servidor de pruebas
+### 5. Iniciar el sistema
 ```bash
 php artisan serve
 ```
-¡Listo! La aplicación estará disponible ingresando a `http://localhost:8000` en tu navegador.
 
 ---
 
-## ☁️ Despliegue en Producción (Railway)
+## 🔐 Credenciales de Acceso (Prueba)
+Una vez configurado y "sembrado" (seeded), puedes entrar con la cuenta de administrador generada automáticamente:
 
-Este proyecto está optimizado con un archivo `Dockerfile` de tipo "Multi-Etapa", por lo que Railway lo construirá automáticamente de forma rápida, eficiente y sin errores de Apache.
+- **Email:** `admin@cup.fic.edu.bo`
+- **Password:** `admin123`
 
-### Pasos exactos en Railway:
+---
 
-1. **Conectar el Repositorio:** Importa tu repositorio desde GitHub a Railway.
-2. **Base de Datos:** Agrega un plugin de **PostgreSQL** en tu entorno de Railway.
-3. **Variables de Entorno:** Entra a la configuración de tu servicio web (Laravel) > pestaña **Variables** y agrega:
-   - `DB_CONNECTION=pgsql`
-   - `DB_HOST=...` *(Copia el host que te da Railway en el servicio de BD)*
-   - `DB_PORT=...`
-   - `DB_DATABASE=...`
-   - `DB_USERNAME=...`
-   - `DB_PASSWORD=...`
-   - `APP_KEY=base64:...` *(Genera una nueva llave localmente con `php artisan key:generate --show` y pégala aquí)*
-   - `APP_ENV=production`
-   - `APP_DEBUG=false`
-   - `PAYPAL_CLIENT_ID=...`
-   
-4. **Almacenamiento Persistente para PDFs (¡MUY IMPORTANTE!):**
-   Railway usa un sistema de archivos efímero. Si no haces este paso, los PDFs de los postulantes se borrarán cada vez que actualices el código.
-   - Ve a tu servicio web > **Settings** > **Volumes** > **New Volume**.
-   - En el campo *Mount Path* (ruta de montaje), escribe exactamente esto:
-     `/var/www/html/storage/app/public`
+## ☁️ Guía Rápida para Producción (Railway)
 
-5. **Preparar la Base de Datos de Producción:**
-   - Entra al servicio de tu Base de Datos en Railway > pestaña **Data** > **Query**. Pega y ejecuta todo el contenido de `database/sql/database.sql`.
-   - Ve al servicio de tu aplicación web > pestaña **Terminal** y ejecuta los seeders:
-     ```bash
-     php artisan db:seed
-     ```
+El repositorio está optimizado con un `Dockerfile` Multi-Etapa, asegurando un despliegue sin conflictos.
 
-¡Felicidades! Todo el sistema CUP estará funcionando en vivo, asegurando que los estudiantes suban sus documentos, los administradores los validen y el pago quede bloqueado a nivel de base de datos hasta cumplir los requisitos.
+1. **Variables de Entorno:** Configura en Railway tus accesos de DB (`DB_HOST`, `DB_PORT`, etc.) y `APP_KEY`.
+2. **Volúmenes (Crítico):** Para que los PDFs no se borren en cada actualización, añade un Volumen en Railway apuntando a:
+   `/var/www/html/storage/app/public`
+3. **Poblar DB:** Desde la consola de base de datos en Railway, ejecuta el SQL de `database/sql/database.sql`. Luego entra a la Terminal web del contenedor y corre `php artisan db:seed`.
