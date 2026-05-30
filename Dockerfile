@@ -20,8 +20,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Solucionar error de Apache: "More than one MPM loaded"
-RUN a2dismod mpm_event mpm_worker || true \
-    && a2enmod mpm_prefork || true
+# Borramos forzosamente los enlaces simbólicos de los módulos conflictivos
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+          /etc/apache2/mods-enabled/mpm_event.conf \
+          /etc/apache2/mods-enabled/mpm_worker.load \
+          /etc/apache2/mods-enabled/mpm_worker.conf \
+    && a2enmod mpm_prefork
 
 # 2. Instalar extensiones de PHP necesarias
 RUN docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd
