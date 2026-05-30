@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Postulante - Sistema CUP FIC</title>
+    <title>Registro de Postulante - Sistema CUP FICCT</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card wide">
-            <div class="auth-title">📝 Registro de Postulante</div>
+            <div class="auth-title">Registro de Postulante</div>
             <p class="auth-subtitle">Complete todos los datos para inscribirse al Curso Preuniversitario</p>
 
             @if($errors->any())

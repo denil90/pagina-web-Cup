@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="stats-grid" style="grid-template-columns: repeat(2,1fr);">
-    <div class="stat-card"><div class="stat-icon">✅</div><div><div class="stat-value">{{ $admitidos->count() }}</div><div class="stat-label">Total Admitidos</div></div></div>
-    <div class="stat-card"><div class="stat-icon">🏆</div><div><div class="stat-value">{{ $admitidos->where('opcion_ingreso','PRIMERA OPCION')->count() }}</div><div class="stat-label">En Primera Opción</div></div></div>
+    <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $admitidos->count() }}</div><div class="stat-label">Total Admitidos</div></div></div>
+    <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $admitidos->where('opcion_ingreso','PRIMERA OPCION')->count() }}</div><div class="stat-label">En Primera Opción</div></div></div>
 </div>
 
 <div class="card">

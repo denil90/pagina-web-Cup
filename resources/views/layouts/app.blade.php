@@ -14,7 +14,7 @@
         {{-- Sidebar --}}
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">🎓 CUP - FIC</div>
+                <div class="sidebar-logo">🎓 CUP - FICCT</div>
                 <div class="sidebar-subtitle">Curso Preuniversitario</div>
             </div>
 
@@ -24,69 +24,69 @@
                         {{-- Menú Administrador/Docente --}}
                         <div class="nav-section-title">Principal</div>
                         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                            <span class="icon">📊</span> Dashboard
+                            <span class="icon"></span> Dashboard
                         </a>
 
                         <div class="nav-section-title">Gestión Académica</div>
                         <a href="{{ route('admin.gestiones.index') }}" class="nav-link {{ request()->routeIs('admin.gestiones.*') ? 'active' : '' }}">
-                            <span class="icon">📅</span> Gestiones
+                            <span class="icon"></span> Gestiones
                         </a>
                         <a href="{{ route('admin.carreras.index') }}" class="nav-link {{ request()->routeIs('admin.carreras.*') ? 'active' : '' }}">
-                            <span class="icon">🎯</span> Carreras
+                            <span class="icon"></span> Carreras
                         </a>
                         <a href="{{ route('admin.materias.index') }}" class="nav-link {{ request()->routeIs('admin.materias.*') ? 'active' : '' }}">
-                            <span class="icon">📚</span> Materias
+                            <span class="icon"></span> Materias
                         </a>
 
                         <div class="nav-section-title">Infraestructura</div>
                         <a href="{{ route('admin.grupos.index') }}" class="nav-link {{ request()->routeIs('admin.grupos.*') ? 'active' : '' }}">
-                            <span class="icon">👥</span> Grupos
+                            <span class="icon"></span> Grupos
                         </a>
                         <a href="{{ route('admin.aulas.index') }}" class="nav-link {{ request()->routeIs('admin.aulas.*') ? 'active' : '' }}">
-                            <span class="icon">🏫</span> Aulas
+                            <span class="icon"></span> Aulas
                         </a>
                         <a href="{{ route('admin.horarios.index') }}" class="nav-link {{ request()->routeIs('admin.horarios.*') ? 'active' : '' }}">
-                            <span class="icon">🕐</span> Horarios
+                            <span class="icon"></span> Horarios
                         </a>
                         <a href="{{ route('admin.turnos.index') }}" class="nav-link {{ request()->routeIs('admin.turnos.*') ? 'active' : '' }}">
-                            <span class="icon">🔄</span> Turnos
+                            <span class="icon"></span> Turnos
                         </a>
 
                         <div class="nav-section-title">Personal</div>
                         <a href="{{ route('admin.docentes.index') }}" class="nav-link {{ request()->routeIs('admin.docentes.*') ? 'active' : '' }}">
-                            <span class="icon">👨‍🏫</span> Docentes
+                            <span class="icon"></span> Docentes
                         </a>
                         <a href="{{ route('admin.postulantes.index') }}" class="nav-link {{ request()->routeIs('admin.postulantes.*') ? 'active' : '' }}">
-                            <span class="icon">📝</span> Postulantes
+                            <span class="icon"></span> Postulantes
                         </a>
 
                         <div class="nav-section-title">Evaluación</div>
                         <a href="{{ route('admin.notas.index') }}" class="nav-link {{ request()->routeIs('admin.notas.*') ? 'active' : '' }}">
-                            <span class="icon">📋</span> Notas
+                            <span class="icon"></span> Notas
                         </a>
                         <a href="{{ route('admin.admision.index') }}" class="nav-link {{ request()->routeIs('admin.admision.*') ? 'active' : '' }}">
-                            <span class="icon">✅</span> Admisión
+                            <span class="icon"></span> Admisión
                         </a>
                         <a href="{{ route('admin.reportes.index') }}" class="nav-link {{ request()->routeIs('admin.reportes.*') ? 'active' : '' }}">
-                            <span class="icon">📈</span> Reportes
+                            <span class="icon"></span> Reportes
                         </a>
                     @elseif(Auth::user()->esPostulante())
                         {{-- Menú Postulante --}}
                         <div class="nav-section-title">Mi CUP</div>
                         <a href="{{ route('postulante.dashboard') }}" class="nav-link {{ request()->routeIs('postulante.dashboard') ? 'active' : '' }}">
-                            <span class="icon">🏠</span> Mi Panel
+                            <span class="icon"></span> Mi Panel
                         </a>
                         <a href="{{ route('postulante.requisitos') }}" class="nav-link {{ request()->routeIs('postulante.requisitos') ? 'active' : '' }}">
-                            <span class="icon">📄</span> Requisitos
+                            <span class="icon"></span> Requisitos
                         </a>
                         <a href="{{ route('postulante.pago') }}" class="nav-link {{ request()->routeIs('postulante.pago') ? 'active' : '' }}">
-                            <span class="icon">💳</span> Pago
+                            <span class="icon"></span> Pago
                         </a>
                         <a href="{{ route('postulante.notas') }}" class="nav-link {{ request()->routeIs('postulante.notas') ? 'active' : '' }}">
-                            <span class="icon">📋</span> Mis Notas
+                            <span class="icon"></span> Mis Notas
                         </a>
                         <a href="{{ route('postulante.resultados') }}" class="nav-link {{ request()->routeIs('postulante.resultados') ? 'active' : '' }}">
-                            <span class="icon">🏆</span> Resultados
+                            <span class="icon"></span> Resultados
                         </a>
                     @endif
                 @endauth

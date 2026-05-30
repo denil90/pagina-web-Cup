@@ -7,7 +7,7 @@
     <div class="card-header"><h2>Ejecutar Proceso de Admisión</h2></div>
     <div class="card-body">
         <div class="alert alert-warning">
-            ⚠️ Este proceso evalúa TODOS los postulantes de la gestión seleccionada, verifica aprobación en todas las materias (≥60), y asigna cupos por carrera considerando primera y segunda opción.
+            Este proceso evalúa TODOS los postulantes de la gestión seleccionada, verifica aprobación en todas las materias (≥60), y asigna cupos por carrera considerando primera y segunda opción.
         </div>
         <form method="POST" action="{{ route('admin.admision.procesar') }}" onsubmit="return confirm('¿Ejecutar el proceso de admisión? Esto recalculará todos los resultados.')">
             @csrf
@@ -19,7 +19,7 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">🚀 Procesar Admisión</button>
+            <button type="submit" class="btn btn-primary btn-lg">Procesar Admisión</button>
         </form>
     </div>
 </div>

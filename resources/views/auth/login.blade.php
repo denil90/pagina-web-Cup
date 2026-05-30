@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Sistema CUP FIC</title>
+    <title>Iniciar Sesión - Sistema CUP FICCT</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <div class="auth-title">🎓 CUP - FIC</div>
+            <div class="auth-title">🎓 CUP - FICCT</div>
             <p class="auth-subtitle">Curso Preuniversitario — Facultad de Informática y Computación</p>
 
             @if($errors->any())
@@ -49,7 +49,7 @@
 
             <div class="text-center mt-2">
                 <a href="{{ route('resultados.publicos') }}" style="font-size: 0.85rem;">
-                    📋 Consultar Resultados de Admisión
+                    Consultar Resultados de Admisión
                 </a>
             </div>
         </div>

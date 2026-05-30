@@ -5,28 +5,28 @@
 @section('content')
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon">📝</div>
+        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $estadisticas['total_postulantes'] }}</div>
             <div class="stat-label">Postulantes {{ $gestionActual?->nombreCompleto ?? '' }}</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon">👥</div>
+        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $estadisticas['total_grupos'] }}</div>
             <div class="stat-label">Grupos Activos</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $estadisticas['total_docentes'] }}</div>
             <div class="stat-label">Docentes Activos</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon">✅</div>
+        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $estadisticas['total_admitidos'] }}</div>
             <div class="stat-label">Admitidos {{ $gestionActual?->nombreCompleto ?? '' }}</div>
@@ -42,7 +42,7 @@
     <div class="card-body">
         @if($gestiones->isEmpty())
             <div class="empty-state">
-                <div class="icon">📅</div>
+                <div class="icon"></div>
                 <h3>No hay gestiones registradas</h3>
                 <p>Cree una gestión para comenzar a trabajar.</p>
             </div>

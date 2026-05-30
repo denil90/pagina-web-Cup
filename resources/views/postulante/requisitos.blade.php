@@ -5,7 +5,7 @@
 @section('content')
 <div class="card mb-3">
     <div class="card-header">
-        <h2>📄 Documentos Requeridos</h2>
+        <h2>Documentos Requeridos</h2>
     </div>
     <div class="card-body">
         <p class="text-muted" style="margin-bottom: 20px;">
@@ -20,24 +20,24 @@
                     @if($postulante->archivo_titulo_bachiller)
                         <span class="requisito-check">✓</span>
                     @else
-                        <span>📜</span>
+                        <span></span>
                     @endif
                 </div>
                 <h3 class="requisito-title">Título de Bachiller</h3>
 
                 @if($postulante->archivo_titulo_bachiller)
                     <div class="requisito-status status-uploaded">
-                        <span>📎 Documento subido</span>
+                        <span>Documento subido</span>
                     </div>
                     <div class="requisito-actions">
                         <a href="{{ asset('storage/' . $postulante->archivo_titulo_bachiller) }}" target="_blank" class="btn btn-info btn-sm">
-                            👁 Ver PDF
+                            Ver PDF
                         </a>
                     </div>
                     <p class="requisito-hint mt-1">¿Subiste el archivo incorrecto? Puedes reemplazarlo:</p>
                 @else
                     <div class="requisito-status status-pending">
-                        <span>⏳ Pendiente de subir</span>
+                        <span>Pendiente de subir</span>
                     </div>
                 @endif
 
@@ -46,7 +46,7 @@
                     <div class="file-upload-area" id="dropzone-titulo">
                         <input type="file" name="archivo_titulo_bachiller" id="file-titulo" accept=".pdf" required class="file-input">
                         <label for="file-titulo" class="file-label">
-                            <span class="file-icon">📁</span>
+                            <span class="file-icon"></span>
                             <span class="file-text" id="file-text-titulo">Haz clic para seleccionar tu PDF</span>
                             <span class="file-hint">Solo archivos PDF — Máx. 5 MB</span>
                         </label>
@@ -59,7 +59,7 @@
 
                 @if($postulante->titulo_bachiller)
                     <div class="requisito-verified mt-2">
-                        <span>✅ Verificado por el administrador</span>
+                        <span>Verificado por el administrador</span>
                     </div>
                 @endif
             </div>
@@ -70,24 +70,24 @@
                     @if($postulante->archivo_libreta)
                         <span class="requisito-check">✓</span>
                     @else
-                        <span>📋</span>
+                        <span></span>
                     @endif
                 </div>
                 <h3 class="requisito-title">Libreta de Último Año</h3>
 
                 @if($postulante->archivo_libreta)
                     <div class="requisito-status status-uploaded">
-                        <span>📎 Documento subido</span>
+                        <span>Documento subido</span>
                     </div>
                     <div class="requisito-actions">
                         <a href="{{ asset('storage/' . $postulante->archivo_libreta) }}" target="_blank" class="btn btn-info btn-sm">
-                            👁 Ver PDF
+                            Ver PDF
                         </a>
                     </div>
                     <p class="requisito-hint mt-1">¿Subiste el archivo incorrecto? Puedes reemplazarlo:</p>
                 @else
                     <div class="requisito-status status-pending">
-                        <span>⏳ Pendiente de subir</span>
+                        <span>Pendiente de subir</span>
                     </div>
                 @endif
 
@@ -96,7 +96,7 @@
                     <div class="file-upload-area" id="dropzone-libreta">
                         <input type="file" name="archivo_libreta" id="file-libreta" accept=".pdf" required class="file-input">
                         <label for="file-libreta" class="file-label">
-                            <span class="file-icon">📁</span>
+                            <span class="file-icon"></span>
                             <span class="file-text" id="file-text-libreta">Haz clic para seleccionar tu PDF</span>
                             <span class="file-hint">Solo archivos PDF — Máx. 5 MB</span>
                         </label>
@@ -109,7 +109,7 @@
 
                 @if($postulante->libreta_de_ultimo_anio)
                     <div class="requisito-verified mt-2">
-                        <span>✅ Verificado por el administrador</span>
+                        <span>Verificado por el administrador</span>
                     </div>
                 @endif
             </div>

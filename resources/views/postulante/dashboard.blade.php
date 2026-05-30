@@ -44,7 +44,7 @@
 @if($postulante->admisionFinal)
 <div class="card mt-3">
     <div class="card-body" style="text-align:center;">
-        <h2 style="color:var(--success-light);font-size:1.5rem;">🎉 ¡Felicidades! Has sido ADMITIDO</h2>
+        <h2 style="color:var(--success-light);font-size:1.5rem;">¡Felicidades! Has sido ADMITIDO</h2>
         <p style="font-size:1.1rem;">Carrera: <strong>{{ $postulante->admisionFinal->carrera->nombre }}</strong></p>
         <p>Nota Final CUP: <strong>{{ $postulante->admisionFinal->nota_final_cup }}</strong> | {{ $postulante->admisionFinal->opcion_ingreso }}</p>
     </div>
