@@ -16,9 +16,8 @@ class RegisterController extends Controller
     public function showRegistroPostulante()
     {
         $carreras = Carrera::all();
-        $gestiones = Gestion::orderByDesc('anio')->orderByDesc('semestre')->get();
 
-        return view('auth.registro', compact('carreras', 'gestiones'));
+        return view('auth.registro', compact('carreras'));
     }
 
     public function registrarPostulante(RegistroPostulanteRequest $request)
@@ -47,7 +46,7 @@ class RegisterController extends Controller
                 'libreta_de_ultimo_anio' => false,
                 'id_carrera_primera' => $request->id_carrera_primera,
                 'id_carrera_segunda' => $request->id_carrera_segunda,
-                'id_gestion' => $request->id_gestion ?? Gestion::orderByDesc('anio')->orderByDesc('semestre')->first()?->id_gestion,
+                'id_gestion' => Gestion::max('id_gestion'),
             ]);
 
             DB::commit();

@@ -5,14 +5,12 @@
 @section('content')
 <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
     <div class="stat-card">
-        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $carga['total_grupos'] }}</div>
             <div class="stat-label">Grupos Asignados (máx. 5)</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon"></div>
         <div>
             <div class="stat-value">{{ $carga['asignaciones']->count() }}</div>
             <div class="stat-label">Materias Asignadas</div>

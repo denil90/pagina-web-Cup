@@ -115,7 +115,7 @@
                             <option value="">Seleccione su primera opción...</option>
                             @foreach($carreras as $carrera)
                                 <option value="{{ $carrera->id }}" {{ old('id_carrera_primera') == $carrera->id ? 'selected' : '' }}>
-                                    {{ $carrera->nombre }} (Cupo: {{ $carrera->cupo_maximo }})
+                                    {{ $carrera->nombre }}
                                 </option>
                             @endforeach
                         </select>
@@ -126,25 +126,13 @@
                             <option value="">Seleccione su segunda opción (opcional)...</option>
                             @foreach($carreras as $carrera)
                                 <option value="{{ $carrera->id }}" {{ old('id_carrera_segunda') == $carrera->id ? 'selected' : '' }}>
-                                    {{ $carrera->nombre }} (Cupo: {{ $carrera->cupo_maximo }})
+                                    {{ $carrera->nombre }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
 
-                @if($gestiones->count() > 1)
-                <div class="form-group">
-                    <label class="form-label" for="id_gestion">Gestión</label>
-                    <select id="id_gestion" name="id_gestion" class="form-control">
-                        @foreach($gestiones as $gestion)
-                            <option value="{{ $gestion->id_gestion }}" {{ $loop->first ? 'selected' : '' }}>
-                                {{ $gestion->nombreCompleto }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                @endif
 
                 <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">Registrarse</button>
             </form>

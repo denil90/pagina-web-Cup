@@ -97,10 +97,12 @@ Route::middleware(['auth', 'verificar.rol:administrador,docente'])->prefix('admi
     // Configuración (Aulas, Horarios, Turnos)
     Route::get('/aulas', [Admin\ConfiguracionController::class, 'aulasIndex'])->name('aulas.index');
     Route::post('/aulas', [Admin\ConfiguracionController::class, 'aulasStore'])->name('aulas.store');
+    Route::put('/aulas/{id}', [Admin\ConfiguracionController::class, 'aulasUpdate'])->name('aulas.update');
     Route::delete('/aulas/{id}', [Admin\ConfiguracionController::class, 'aulasDestroy'])->name('aulas.destroy');
 
     Route::get('/horarios', [Admin\ConfiguracionController::class, 'horariosIndex'])->name('horarios.index');
     Route::post('/horarios', [Admin\ConfiguracionController::class, 'horariosStore'])->name('horarios.store');
+    Route::put('/horarios/{id}', [Admin\ConfiguracionController::class, 'horariosUpdate'])->name('horarios.update');
     Route::delete('/horarios/{id}', [Admin\ConfiguracionController::class, 'horariosDestroy'])->name('horarios.destroy');
 
     Route::get('/turnos', [Admin\ConfiguracionController::class, 'turnosIndex'])->name('turnos.index');

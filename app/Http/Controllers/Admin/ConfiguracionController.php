@@ -33,6 +33,23 @@ class ConfiguracionController extends Controller
         }
     }
 
+    public function aulasUpdate(Request $request, int $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:50',
+            'edificio' => 'required|string|max:50',
+            'capacidad' => 'required|integer|min:1',
+        ]);
+
+        try {
+            $aula = Aula::findOrFail($id);
+            $aula->update($request->only('nombre', 'edificio', 'capacidad'));
+            return back()->with('success', 'Aula actualizada.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
     public function aulasDestroy(int $id)
     {
         try {
@@ -61,6 +78,23 @@ class ConfiguracionController extends Controller
         try {
             Horario::create($request->only('dia', 'hora_inicio', 'hora_final'));
             return back()->with('success', 'Horario creado.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function horariosUpdate(Request $request, int $id)
+    {
+        $request->validate([
+            'dia' => 'required|string|max:20',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_final' => 'required|date_format:H:i|after:hora_inicio',
+        ]);
+
+        try {
+            $horario = Horario::findOrFail($id);
+            $horario->update($request->only('dia', 'hora_inicio', 'hora_final'));
+            return back()->with('success', 'Horario actualizado.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
         }
