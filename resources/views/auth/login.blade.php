@@ -1,10 +1,3 @@
-@extends('layouts.app')
-@section('title', 'Iniciar Sesión')
-
-@section('content')
-{{-- Override layout for auth pages --}}
-@endsection
-
 {{-- Auth pages don't use the app layout --}}
 <!DOCTYPE html>
 <html lang="es">
