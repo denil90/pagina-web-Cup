@@ -1,6 +1,20 @@
+# ==========================================
+# Etapa 1: Node.js (Construcción de assets frontend)
+# ==========================================
+FROM node:20 AS frontend
+WORKDIR /app
+COPY package.json ./
+# Ignoramos dependencias fallidas para que instale lo posible si no hay lockfile
+RUN npm install --no-audit --no-fund
+COPY . .
+RUN npm run build
+
+# ==========================================
+# Etapa 2: PHP Apache (Servidor de Producción)
+# ==========================================
 FROM php:8.4-apache
 
-# 1. Instalar dependencias del sistema requeridas por Laravel y PostgreSQL
+# 1. Instalar dependencias puras (sin Node.js para evitar conflictos con Apache MPM)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libonig-dev \
@@ -10,33 +24,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     libpq-dev \
-    gnupg2
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar Node.js 20 LTS (Más estable y evita conflictos con Apache)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-# Limpiar caché de apt para reducir el tamaño de la imagen
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Solucionar error de Apache: "More than one MPM loaded"
-# Borramos forzosamente los enlaces simbólicos de los módulos conflictivos
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
-          /etc/apache2/mods-enabled/mpm_event.conf \
-          /etc/apache2/mods-enabled/mpm_worker.load \
-          /etc/apache2/mods-enabled/mpm_worker.conf \
-    && a2enmod mpm_prefork
-
-# 2. Instalar extensiones de PHP necesarias
+# 2. Instalar extensiones de PHP
 RUN docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
-# 3. Configurar Apache para que apunte a la carpeta "public" de Laravel
+# 3. Configurar Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 RUN a2enmod rewrite
 
-# 4. Aumentar el límite de subida de archivos de PHP (Soluciona el error al subir PDFs)
+# 4. Aumentar límites para subida de PDFs (20MB)
 RUN echo "upload_max_filesize = 20M" > /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size = 20M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/uploads.ini
@@ -44,37 +43,35 @@ RUN echo "upload_max_filesize = 20M" > /usr/local/etc/php/conf.d/uploads.ini \
 # 5. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 6. Establecer el directorio de trabajo
+# 6. Preparar entorno
 WORKDIR /var/www/html
 
-# 7. Copiar los archivos de la aplicación
+# Copiar el código fuente
 COPY . .
 
-# Crear un archivo .env temporal para que los comandos artisan no fallen durante el build
+# Copiar los archivos compilados de Vite desde la Etapa 1
+COPY --from=frontend /app/public/build ./public/build
+
+# 7. Engaño temporal con .env para el build
 RUN cp .env.example .env
 
-# 8. Instalar dependencias de PHP (sin paquetes de desarrollo)
+# 8. Instalar librerías de PHP
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# 9. Construir los assets de frontend (Vite)
-RUN npm install
-RUN npm run build
-
-# 10. Configurar permisos para las carpetas críticas
-# Asegurarse de que las carpetas existan primero
+# 9. Configurar carpetas y permisos
 RUN mkdir -p /var/www/html/storage/app/public /var/www/html/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 11. Generar la key de la app y crear el enlace simbólico del storage
+# 10. Comandos Artisan finales
 RUN php artisan key:generate
 RUN php artisan storage:link
 
-# Eliminar el .env temporal (Railway inyectará las variables reales en tiempo de ejecución)
+# 11. Limpieza
 RUN rm .env
 
-# Exponer el puerto 80
+# Exponer el puerto
 EXPOSE 80
 
-# Iniciar Apache
+# Iniciar el servidor
 CMD ["apache2-foreground"]
