@@ -1,16 +1,5 @@
 # ==========================================
-# Etapa 1: Node.js (Construcción de assets frontend)
-# ==========================================
-FROM node:20 AS frontend
-WORKDIR /app
-COPY package.json ./
-# Ignoramos dependencias fallidas para que instale lo posible si no hay lockfile
-RUN npm install --no-audit --no-fund
-COPY . .
-RUN npm run build
-
-# ==========================================
-# Etapa 2: PHP Apache (Servidor de Producción)
+# Etapa 1: PHP Apache (Servidor de Producción)
 # ==========================================
 FROM php:8.4-apache
 
@@ -50,9 +39,6 @@ WORKDIR /var/www/html
 
 # Copiar el código fuente
 COPY . .
-
-# Copiar los archivos compilados de Vite desde la Etapa 1
-COPY --from=frontend /app/public/build ./public/build
 
 # 7. Engaño temporal con .env para el build
 RUN cp .env.example .env

@@ -18,8 +18,6 @@ Si acabas de clonar el repositorio, sigue estos pasos para configurar tu entorno
 Asegúrate de tener PHP (>= 8.4) y Composer instalados. Luego ejecuta:
 ```bash
 composer install
-npm install
-npm run build
 ```
 
 ### 2. Configurar el archivo de entorno
