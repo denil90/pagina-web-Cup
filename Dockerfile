@@ -1,7 +1,7 @@
 FROM php:8.4-apache
 
 # 1. Instalar dependencias del sistema requeridas por Laravel y PostgreSQL
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
@@ -10,11 +10,18 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    nodejs \
-    npm
+    gnupg2
+
+# Instalar Node.js 20 LTS (Más estable y evita conflictos con Apache)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Limpiar caché de apt para reducir el tamaño de la imagen
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Solucionar error de Apache: "More than one MPM loaded"
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork || true
 
 # 2. Instalar extensiones de PHP necesarias
 RUN docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd
