@@ -41,7 +41,7 @@ COPY . .
 RUN cp .env.example .env
 
 # 8. Instalar librerías de PHP
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --optimize-autoloader --no-dev
 
 # 9. Configurar carpetas y permisos
 RUN mkdir -p /var/www/html/storage/app/public /var/www/html/bootstrap/cache
