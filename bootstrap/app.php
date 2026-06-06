@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
         $middleware->alias([
-            'verificar.rol' => \App\Http\Middleware\VerificarRol::class,
+            'verificar.rol' => \Modules\Seguridad\Http\Middleware\VerificarRol::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -2,26 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Modules\Academico\Models\Gestion as BaseGestion;
 
-class Gestion extends Model
+class Gestion extends BaseGestion
 {
-    protected $table = 'gestion';
-    protected $primaryKey = 'id_gestion';
-    public $timestamps = false;
-
-    protected $fillable = [
-        'semestre',
-        'anio',
-    ];
-
-    public function postulantes()
-    {
-        return $this->hasMany(Postulante::class, 'id_gestion', 'id_gestion');
-    }
-
-    public function getNombreCompletoAttribute(): string
-    {
-        return "Gestión {$this->semestre} - {$this->anio}";
-    }
 }

@@ -1,0 +1,11 @@
+{
+    "name": "Facultad",
+    "alias": "facultad",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Facultad\\Providers\\FacultadServiceProvider"
+    ],
+    "files": []
+}

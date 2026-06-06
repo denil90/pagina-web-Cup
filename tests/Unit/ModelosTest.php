@@ -7,7 +7,7 @@ use App\Models\Gestion;
 use App\Models\Horario;
 use App\Models\Aula;
 use App\Models\Carrera;
-use App\Services\PagoService;
+use Modules\Admision\Services\PagoService;
 use Tests\TestCase;
 
 class ModelosTest extends TestCase

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/facultad",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Facultad\\": "app/",
+            "Modules\\Facultad\\Database\\Factories\\": "database/factories/",
+            "Modules\\Facultad\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Facultad\\Tests\\": "tests/"
+        }
+    }
+}

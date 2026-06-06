@@ -1,0 +1,11 @@
+{
+    "name": "Admision",
+    "alias": "admision",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Admision\\Providers\\AdmisionServiceProvider"
+    ],
+    "files": []
+}

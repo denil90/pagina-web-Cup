@@ -2,19 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Modules\Seguridad\Models\Administrador as BaseAdministrador;
 
-class Administrador extends Model
+class Administrador extends BaseAdministrador
 {
-    protected $table = 'administrador';
-    protected $primaryKey = 'id_admin';
-    public $incrementing = false;
-    public $timestamps = false;
-
-    protected $fillable = ['id_admin'];
-
-    public function usuario()
-    {
-        return $this->belongsTo(Usuario::class, 'id_admin', 'id_usuario');
-    }
 }
