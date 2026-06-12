@@ -58,5 +58,9 @@ RUN rm .env
 # Exponer el puerto
 EXPOSE 80
 
-# Iniciar el servidor asegurando que no haya conflictos de MPM y usando el puerto de Railway
-CMD bash -c "a2dismod mpm_event mpm_worker; a2enmod mpm_prefork rewrite; sed -i 's/80/${PORT:-80}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf; apache2-foreground"
+# Hacer ejecutable el script de inicio
+RUN chmod +x /var/www/html/start.sh
+
+# Iniciar el servidor usando el script de inicio
+CMD ["/var/www/html/start.sh"]
+
