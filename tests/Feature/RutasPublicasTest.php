@@ -21,10 +21,17 @@ class RutasPublicasTest extends TestCase
         $this->assertTrue(in_array($response->status(), [200, 500]));
     }
 
-    public function test_raiz_redirige_a_login()
+    public function test_raiz_redirige_a_bienvenida()
     {
         $response = $this->get('/');
-        $response->assertRedirect('/login');
+        $response->assertRedirect('/bienvenida');
+    }
+
+    public function test_bienvenida_page_es_accesible()
+    {
+        $response = $this->get('/bienvenida');
+        $response->assertStatus(200);
+        $response->assertSee('Bienvenido al Portal');
     }
 
     public function test_admin_requiere_autenticacion()

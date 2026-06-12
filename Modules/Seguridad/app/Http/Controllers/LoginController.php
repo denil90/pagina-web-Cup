@@ -9,9 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function showLoginForm()
+    public function bienvenida()
     {
-        return view('seguridad::login');
+        return view('seguridad::bienvenida');
+    }
+
+    public function showLoginForm(Request $request)
+    {
+        $tipo = $request->query('tipo', 'postulante');
+
+        return view('seguridad::login', compact('tipo'));
     }
 
     public function login(Request $request)
@@ -41,15 +48,18 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('bienvenida');
     }
 
     private function redirigirSegunRol(Usuario $usuario)
     {
+        if ($usuario->rol === 'docente') {
+            return redirect()->route('docente.dashboard');
+        }
+
         return match ($usuario->rol) {
             'administrador' => redirect()->route('admin.dashboard'),
             'postulante' => redirect()->route('postulante.dashboard'),
-            'docente' => redirect()->route('admin.dashboard'),
             default => redirect()->route('login'),
         };
     }

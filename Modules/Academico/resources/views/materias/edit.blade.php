@@ -1,1 +1,1 @@
-@extends('admin.materias.create')
+@extends('academico::materias.create')

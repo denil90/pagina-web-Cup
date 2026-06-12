@@ -1096,3 +1096,291 @@ textarea.form-control {
     }
 }
 
+/* ==================== WELCOME / PORTAL PAGE ==================== */
+.welcome-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-container::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(57, 73, 171, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(201, 168, 76, 0.04) 0%, transparent 50%);
+    animation: portalGlow 15s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes portalGlow {
+    0%   { opacity: 0.6; transform: scale(1) rotate(0deg); }
+    50%  { opacity: 1;   transform: scale(1.05) rotate(2deg); }
+    100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-logo {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.welcome-faculty {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+
+.welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 24px;
+    margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.welcome-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 40px 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.welcome-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 40px rgba(201, 168, 76, 0.15), 0 0 60px rgba(201, 168, 76, 0.05);
+}
+
+.welcome-card:hover::before {
+    opacity: 1;
+}
+
+.welcome-card-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    transition: var(--transition);
+}
+
+.welcome-card:nth-child(1) .welcome-card-icon {
+    background: rgba(201, 168, 76, 0.12);
+    color: var(--accent);
+}
+
+.welcome-card:nth-child(2) .welcome-card-icon {
+    background: rgba(57, 73, 171, 0.15);
+    color: var(--primary-light);
+}
+
+.welcome-card:nth-child(3) .welcome-card-icon {
+    background: rgba(46, 125, 50, 0.12);
+    color: var(--success-light);
+}
+
+.welcome-card:hover .welcome-card-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 24px rgba(201, 168, 76, 0.2);
+}
+
+.welcome-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.welcome-card-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.welcome-footer {
+    margin-top: 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.welcome-footer a {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.welcome-footer a:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 768px) {
+    .welcome-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+    }
+
+    .welcome-card {
+        padding: 28px 20px;
+    }
+
+    .welcome-logo {
+        font-size: 1.6rem;
+    }
+
+    .welcome-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* ==================== DOCENTE STATUS BADGES ==================== */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.status-indicator--pending {
+    background: rgba(245, 127, 23, 0.12);
+    color: var(--warning-light);
+    border: 1px solid rgba(245, 127, 23, 0.25);
+}
+
+.status-indicator--active {
+    background: rgba(46, 125, 50, 0.12);
+    color: var(--success-light);
+    border: 1px solid rgba(46, 125, 50, 0.25);
+}
+
+.status-indicator--rejected {
+    background: rgba(198, 40, 40, 0.12);
+    color: var(--danger-light);
+    border: 1px solid rgba(198, 40, 40, 0.25);
+}
+
+.status-indicator .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.status-indicator--pending .dot { background: var(--warning-light); }
+.status-indicator--active .dot { background: var(--success-light); animation: none; }
+.status-indicator--rejected .dot { background: var(--danger-light); animation: none; }
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* ==================== DOCENTE DASHBOARD ==================== */
+.docente-status-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.docente-status-card h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.docente-status-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Back to portal link */
+.back-to-portal {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: var(--transition);
+    margin-bottom: 16px;
+}
+
+.back-to-portal:hover {
+    color: var(--accent);
+    transform: translateX(-4px);
+}

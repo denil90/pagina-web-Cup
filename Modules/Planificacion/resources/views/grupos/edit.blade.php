@@ -1,1 +1,1 @@
-@extends('admin.grupos.create')
+@extends('planificacion::grupos.create')

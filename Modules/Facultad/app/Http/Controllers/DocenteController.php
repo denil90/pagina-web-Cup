@@ -18,9 +18,13 @@ class DocenteController extends Controller
         private readonly DocenteService $docenteService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $docentes = Docente::with('usuario')->get();
+        $query = Docente::with('usuario');
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+        $docentes = $query->get();
         return view('facultad::docentes.index', compact('docentes'));
     }
 
@@ -79,7 +83,7 @@ class DocenteController extends Controller
             'titulo_profesional' => 'required|string|max:150',
             'maestria' => 'nullable|string|max:150',
             'diplomado' => 'nullable|string|max:150',
-            'estado' => 'required|in:ACTIVO,INACTIVO',
+            'estado' => 'required|in:ACTIVO,INACTIVO,PENDIENTE,RECHAZADO',
         ]);
 
         try {
@@ -132,5 +136,29 @@ class DocenteController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Error al remover: ' . $e->getMessage());
         }
+    }
+
+    public function show(int $id)
+    {
+        $docente = Docente::with('usuario')->findOrFail($id);
+        return view('facultad::docentes.show', compact('docente'));
+    }
+
+    public function aprobar(int $id)
+    {
+        $docente = Docente::findOrFail($id);
+        $docente->update(['estado' => 'ACTIVO']);
+
+        return redirect()->route('admin.docentes.show', $id)
+            ->with('success', 'La postulación docente ha sido APROBADA exitosamente.');
+    }
+
+    public function rechazar(int $id)
+    {
+        $docente = Docente::findOrFail($id);
+        $docente->update(['estado' => 'RECHAZADO']);
+
+        return redirect()->route('admin.docentes.show', $id)
+            ->with('success', 'La postulación docente ha sido RECHAZADA.');
     }
 }

@@ -1,1 +1,1 @@
-@extends('admin.carreras.create')
+@extends('academico::carreras.create')

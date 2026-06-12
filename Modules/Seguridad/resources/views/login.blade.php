@@ -10,8 +10,18 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
+            <a href="{{ route('bienvenida') }}" class="back-to-portal">← Volver al Portal</a>
+
             <div class="auth-title">🎓 CUP - FICCT</div>
-            <p class="auth-subtitle">Curso Preuniversitario — Facultad de Informática y Computación</p>
+            <p class="auth-subtitle">
+                @if(($tipo ?? 'postulante') === 'docente')
+                    Acceso para Docentes
+                @elseif(($tipo ?? 'postulante') === 'administrador')
+                    Acceso para Administradores
+                @else
+                    Cursos Preuniversitario — Acceso para Postulantes
+                @endif
+            </p>
 
             @if($errors->any())
                 <div class="alert alert-danger">
@@ -42,10 +52,17 @@
                 <button type="submit" class="btn btn-primary btn-lg w-100">Iniciar Sesión</button>
             </form>
 
-            <div class="text-center mt-3">
-                <p class="text-muted">¿Eres postulante nuevo?</p>
-                <a href="{{ route('registro') }}" class="btn btn-secondary w-100 mt-1">Registrarse como Postulante</a>
-            </div>
+            @if(($tipo ?? 'postulante') === 'docente')
+                <div class="text-center mt-3">
+                    <p class="text-muted">¿Desea postular como docente?</p>
+                    <a href="{{ route('registro.docente') }}" class="btn btn-secondary w-100 mt-1">Registrarse como Docente</a>
+                </div>
+            @elseif(($tipo ?? 'postulante') === 'postulante')
+                <div class="text-center mt-3">
+                    <p class="text-muted">¿Eres postulante nuevo?</p>
+                    <a href="{{ route('registro') }}" class="btn btn-secondary w-100 mt-1">Registrarse como Postulante</a>
+                </div>
+            @endif
 
             <div class="text-center mt-2">
                 <a href="{{ route('resultados.publicos') }}" style="font-size: 0.85rem;">

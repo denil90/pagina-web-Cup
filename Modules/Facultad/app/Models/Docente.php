@@ -17,6 +17,9 @@ class Docente extends Model
         'maestria',
         'diplomado',
         'estado',
+        'archivo_titulo',
+        'archivo_maestria',
+        'archivo_diplomado',
     ];
 
     public function usuario()

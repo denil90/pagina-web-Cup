@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 // =============================================
 // RUTAS PÚBLICAS
 // =============================================
-Route::get('/', fn() => redirect()->route('login'));
+Route::get('/', fn() => redirect()->route('bienvenida'));
 
 // Módulo Seguridad (login, logout) gestionado por Modules/Seguridad/routes/web.php
 

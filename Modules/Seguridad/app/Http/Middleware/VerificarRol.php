@@ -20,6 +20,12 @@ class VerificarRol
             return redirect()->route('login')->with('error', 'Debe iniciar sesión.');
         }
 
+        if ($usuario->rol === 'docente') {
+            if (!$request->routeIs('docente.*') && !$request->routeIs('logout')) {
+                return redirect()->route('docente.dashboard')->with('error', 'Acceso restringido al portal docente.');
+            }
+        }
+
         if (!in_array($usuario->rol, $roles)) {
             abort(403, 'No tiene permisos para acceder a esta sección.');
         }

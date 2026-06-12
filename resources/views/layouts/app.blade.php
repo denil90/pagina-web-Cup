@@ -20,8 +20,8 @@
 
             <nav class="sidebar-nav">
                 @auth
-                    @if(Auth::user()->esAdministrador() || Auth::user()->esDocente())
-                        {{-- Menú Administrador/Docente --}}
+                    @if(Auth::user()->esAdministrador())
+                        {{-- Menú Administrador --}}
                         <div class="nav-section-title">Principal</div>
                         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <span class="icon"></span> Dashboard
@@ -70,6 +70,17 @@
                         <a href="{{ route('admin.reportes.index') }}" class="nav-link {{ request()->routeIs('admin.reportes.*') ? 'active' : '' }}">
                             <span class="icon"></span> Reportes
                         </a>
+                    @elseif(Auth::user()->esDocente())
+                        {{-- Menú Docente --}}
+                        <div class="nav-section-title">Docente</div>
+                        <a href="{{ route('docente.dashboard') }}" class="nav-link {{ request()->routeIs('docente.dashboard') ? 'active' : '' }}">
+                            <span class="icon"></span> Mi Panel
+                        </a>
+                        @if(Auth::user()->docente && Auth::user()->docente->estado === 'PENDIENTE')
+                            <a href="{{ route('docente.requisitos') }}" class="nav-link {{ request()->routeIs('docente.requisitos') ? 'active' : '' }}">
+                                <span class="icon"></span> Documentos
+                            </a>
+                        @endif
                     @elseif(Auth::user()->esPostulante())
                         {{-- Menú Postulante --}}
                         <div class="nav-section-title">Mi CUP</div>

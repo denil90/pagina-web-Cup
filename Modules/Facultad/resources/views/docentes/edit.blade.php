@@ -36,6 +36,8 @@
                 <select name="estado" class="form-control">
                     <option value="ACTIVO" {{ $docente->estado === 'ACTIVO' ? 'selected' : '' }}>Activo</option>
                     <option value="INACTIVO" {{ $docente->estado === 'INACTIVO' ? 'selected' : '' }}>Inactivo</option>
+                    <option value="PENDIENTE" {{ $docente->estado === 'PENDIENTE' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="RECHAZADO" {{ $docente->estado === 'RECHAZADO' ? 'selected' : '' }}>Rechazado</option>
                 </select>
             </div>
             <div class="btn-group">
