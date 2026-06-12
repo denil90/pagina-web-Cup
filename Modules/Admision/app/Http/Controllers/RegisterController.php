@@ -7,6 +7,7 @@ use Modules\Admision\Http\Requests\RegistroPostulanteRequest;
 use Modules\Academico\Models\Carrera;
 use Modules\Academico\Models\Gestion;
 use Modules\Admision\Models\Postulante;
+use Modules\Planificacion\Models\Turno;
 use Modules\Seguridad\Models\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,8 +17,9 @@ class RegisterController extends Controller
     public function showRegistroPostulante()
     {
         $carreras = Carrera::all();
+        $turnos = Turno::all();
 
-        return view('admision::registro', compact('carreras'));
+        return view('admision::registro', compact('carreras', 'turnos'));
     }
 
     public function registrarPostulante(RegistroPostulanteRequest $request)
@@ -46,6 +48,7 @@ class RegisterController extends Controller
                 'libreta_de_ultimo_anio' => false,
                 'id_carrera_primera' => $request->id_carrera_primera,
                 'id_carrera_segunda' => $request->id_carrera_segunda,
+                'id_turno_preferido' => $request->id_turno_preferido,
                 'id_gestion' => Gestion::max('id_gestion'),
             ]);
 

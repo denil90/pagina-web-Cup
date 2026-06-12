@@ -14,6 +14,7 @@ class DocenteGrupo extends Model
         'id_docente',
         'id_grupo',
         'id_materia',
+        'id_horario',
     ];
 
     public function docente()
@@ -35,5 +36,13 @@ class DocenteGrupo extends Model
             ? 'Modules\Academico\Models\Materia'
             : 'App\Models\Materia';
         return $this->belongsTo($target, 'id_materia', 'id_materia');
+    }
+
+    public function horario()
+    {
+        $target = class_exists('Modules\Planificacion\Models\Horario')
+            ? 'Modules\Planificacion\Models\Horario'
+            : 'App\Models\Horario';
+        return $this->belongsTo($target, 'id_horario', 'id_horario');
     }
 }

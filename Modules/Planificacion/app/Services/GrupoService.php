@@ -49,6 +49,58 @@ class GrupoService
             ->filter(fn(Grupo $grupo) => $grupo->tieneDisponibilidad());
     }
 
+    /**
+     * Asigna automáticamente un postulante al grupo con más cupo disponible
+     * del turno que eligió durante su inscripción.
+     */
+    public function asignarGrupoAutomatico($postulante): ?Grupo
+    {
+        // Si ya tiene grupo asignado, no hacer nada
+        if ($postulante->id_grupo !== null) {
+            return Grupo::find($postulante->id_grupo);
+        }
+
+        $turnoId = $postulante->id_turno_preferido;
+
+        if (!$turnoId) {
+            return null;
+        }
+
+        // Buscar grupos del turno preferido con disponibilidad
+        $grupos = Grupo::where('id_turno', $turnoId)
+            ->get()
+            ->filter(fn(Grupo $g) => $g->tieneDisponibilidad())
+            ->sortByDesc(fn(Grupo $g) => $g->capacidad_maxima - $g->inscritosActuales());
+
+        $grupoElegido = $grupos->first();
+
+        if (!$grupoElegido) {
+            return null;
+        }
+
+        $postulante->id_grupo = $grupoElegido->id_grupo;
+        $postulante->save();
+
+        return $grupoElegido;
+    }
+
+    /**
+     * Verifica si un postulante cumple todas las condiciones para asignación automática
+     * (requisitos aprobados + pago completado) y lo asigna si corresponde.
+     */
+    public function intentarAsignacionAutomatica($postulante): ?Grupo
+    {
+        if (!$postulante->cumpleRequisitos()) {
+            return null;
+        }
+
+        if (!$postulante->tienePagoConfirmado()) {
+            return null;
+        }
+
+        return $this->asignarGrupoAutomatico($postulante);
+    }
+
     public function obtenerEstadisticasGrupo(int $grupoId): array
     {
         $grupo = Grupo::with(['docenteGrupos.docente.usuario', 'docenteGrupos.materia'])

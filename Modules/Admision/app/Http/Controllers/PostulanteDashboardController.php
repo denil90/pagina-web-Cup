@@ -11,9 +11,13 @@ class PostulanteDashboardController extends Controller
     {
         $usuario = Auth::user();
         $postulante = $usuario->postulante()->with([
-            'carreraPrimera', 'carreraSegunda', 'grupo.horario',
-            'grupo.turno', 'gestion', 'notas.materia',
-            'pago', 'admisionFinal.carrera'
+            'carreraPrimera', 'carreraSegunda', 'grupo.turno',
+            'grupo.aula', 'grupo.docenteGrupos.materia',
+            'grupo.docenteGrupos.docente.usuario',
+            'grupo.docenteGrupos.horario',
+            'gestion', 'notas.materia',
+            'pago', 'admisionFinal.carrera',
+            'turnoPreferido',
         ])->first();
 
         $estadoInscripcion = $this->determinarEstado($postulante);

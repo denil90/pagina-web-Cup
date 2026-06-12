@@ -101,7 +101,9 @@ CREATE TABLE postulante (
     id_carrera_primera INT REFERENCES carrera(id) ON DELETE SET NULL,
     id_carrera_segunda INT REFERENCES carrera(id) ON DELETE SET NULL,
     id_grupo INT REFERENCES grupo(id_grupo) ON DELETE SET NULL,
-    id_gestion INT REFERENCES gestion(id_gestion) ON DELETE SET NULL
+    id_gestion INT REFERENCES gestion(id_gestion) ON DELETE SET NULL,
+    -- Turno preferido seleccionado durante la inscripción
+    id_turno_preferido INT REFERENCES turno(id_turno) ON DELETE SET NULL
 );
 
 -- ==========================================================
@@ -112,7 +114,8 @@ CREATE TABLE docente_grupo (
     id SERIAL PRIMARY KEY,
     id_docente INT REFERENCES docente(id_docente) ON DELETE CASCADE,
     id_grupo INT REFERENCES grupo(id_grupo) ON DELETE CASCADE,
-    id_materia INT REFERENCES materia(id_materia) ON DELETE CASCADE
+    id_materia INT REFERENCES materia(id_materia) ON DELETE CASCADE,
+    id_horario INT REFERENCES horario(id_horario) ON DELETE SET NULL
 );
 
 CREATE TABLE notas (

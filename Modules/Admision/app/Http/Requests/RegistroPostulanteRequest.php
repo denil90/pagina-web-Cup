@@ -27,6 +27,7 @@ class RegistroPostulanteRequest extends FormRequest
             'ciudad' => 'required|string|max:100',
             'id_carrera_primera' => 'required|exists:carrera,id',
             'id_carrera_segunda' => 'nullable|exists:carrera,id|different:id_carrera_primera',
+            'id_turno_preferido' => 'required|exists:turno,id_turno',
         ];
     }
 

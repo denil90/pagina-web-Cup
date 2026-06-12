@@ -71,6 +71,7 @@ return new class extends Migration
                 $table->integer('id_carrera_segunda')->nullable();
                 $table->integer('id_grupo')->nullable();
                 $table->integer('id_gestion')->nullable();
+                $table->integer('id_turno_preferido')->nullable();
                 $table->foreign('id_postulante')->references('id_usuario')->on('usuario')->onDelete('cascade');
                 $table->foreign('id_grupo')->references('id_grupo')->on('grupo')->onDelete('set null');
             });
@@ -82,6 +83,7 @@ return new class extends Migration
                 $table->integer('id_docente');
                 $table->integer('id_grupo');
                 $table->integer('id_materia');
+                $table->integer('id_horario')->nullable();
                 $table->foreign('id_docente')->references('id_docente')->on('docente')->onDelete('cascade');
                 $table->foreign('id_grupo')->references('id_grupo')->on('grupo')->onDelete('cascade');
                 $table->foreign('id_materia')->references('id_materia')->on('materia')->onDelete('cascade');

@@ -28,18 +28,51 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header"><h2>Carreras Seleccionadas</h2></div>
+        <div class="card-header"><h2>Carreras y Grupo</h2></div>
         <div class="card-body">
             <p><strong>1ª Opción:</strong> {{ $postulante->carreraPrimera?->nombre ?? '—' }}</p>
             <p><strong>2ª Opción:</strong> {{ $postulante->carreraSegunda?->nombre ?? 'No seleccionada' }}</p>
+            <p><strong>Turno Preferido:</strong> {{ $postulante->turnoPreferido?->nombre ?? '—' }}</p>
             <p><strong>Grupo:</strong> {{ $postulante->grupo?->nombre ?? 'Pendiente de asignación' }}</p>
             @if($postulante->grupo)
                 <p><strong>Turno:</strong> {{ $postulante->grupo->turno?->nombre ?? '—' }}</p>
-                <p><strong>Horario:</strong> {{ $postulante->grupo->horario?->rango ?? '—' }}</p>
+                <p><strong>Aula:</strong> {{ $postulante->grupo->aula?->nombre ?? '—' }} - {{ $postulante->grupo->aula?->edificio ?? '' }}</p>
             @endif
         </div>
     </div>
 </div>
+
+@if($postulante->grupo && $postulante->grupo->docenteGrupos->isNotEmpty())
+<div class="card mt-3">
+    <div class="card-header"><h2>📋 Tu Horario de Clases</h2></div>
+    <div class="card-body">
+        <p style="margin-bottom: 12px; color: var(--text-secondary);">
+            Grupo <strong>{{ $postulante->grupo->nombre }}</strong> — Turno {{ $postulante->grupo->turno?->nombre ?? '' }} — {{ $postulante->grupo->aula?->nombre ?? '' }}
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hora</th>
+                    <th>Materia</th>
+                    <th>Docente</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($postulante->grupo->docenteGrupos->sortBy(fn($dg) => $dg->horario?->hora_inicio) as $dg)
+                <tr>
+                    <td>{{ $dg->horario ? substr($dg->horario->hora_inicio, 0, 5) . ' - ' . substr($dg->horario->hora_final, 0, 5) : '—' }}</td>
+                    <td><strong>{{ $dg->materia?->nombre ?? '—' }}</strong></td>
+                    <td>{{ $dg->docente?->usuario?->nombre ?? '' }} {{ $dg->docente?->usuario?->apellidos ?? '' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">
+            * El horario se repite de Lunes a Viernes.
+        </p>
+    </div>
+</div>
+@endif
 
 @if($postulante->admisionFinal)
 <div class="card mt-3">

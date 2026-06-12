@@ -58,6 +58,13 @@ class PagoService
             'fecha_pago' => now(),
         ]);
 
+        // Intentar asignación automática de grupo
+        $postulante = Postulante::with('pago')->find($postulanteId);
+        if ($postulante) {
+            $grupoService = app(\Modules\Planificacion\Services\GrupoService::class);
+            $grupoService->intentarAsignacionAutomatica($postulante);
+        }
+
         return $pago->fresh();
     }
 

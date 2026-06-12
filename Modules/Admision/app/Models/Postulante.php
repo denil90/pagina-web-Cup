@@ -26,6 +26,7 @@ class Postulante extends Model
         'id_gestion',
         'archivo_titulo_bachiller',
         'archivo_libreta',
+        'id_turno_preferido',
     ];
 
     protected $casts = [
@@ -92,6 +93,14 @@ class Postulante extends Model
     public function pago()
     {
         return $this->hasOne(Pago::class, 'id_postulante', 'id_postulante');
+    }
+
+    public function turnoPreferido()
+    {
+        $target = class_exists('Modules\Planificacion\Models\Turno')
+            ? 'Modules\Planificacion\Models\Turno'
+            : 'App\Models\Turno';
+        return $this->belongsTo($target, 'id_turno_preferido', 'id_turno');
     }
 
     public function cumpleRequisitos(): bool

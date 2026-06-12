@@ -133,6 +133,19 @@
                     </div>
                 </div>
 
+                <h3 style="color: var(--accent); margin: 24px 0 16px; font-size: 0.95rem;">Turno Preferido</h3>
+                <div class="form-group">
+                    <label class="form-label" for="id_turno_preferido">Seleccione el turno en que desea pasar clases *</label>
+                    <select id="id_turno_preferido" name="id_turno_preferido" class="form-control" required>
+                        <option value="">Seleccione un turno...</option>
+                        @foreach($turnos as $turno)
+                            <option value="{{ $turno->id_turno }}" {{ old('id_turno_preferido') == $turno->id_turno ? 'selected' : '' }}>
+                                {{ $turno->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
 
                 <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">Registrarse</button>
             </form>

@@ -57,13 +57,21 @@ class PostulanteAdminController extends Controller
         ]);
 
         try {
-            $postulante = Postulante::findOrFail($id);
+            $postulante = Postulante::with('pago')->findOrFail($id);
             $postulante->update([
                 'titulo_bachiller' => $request->titulo_bachiller,
                 'libreta_de_ultimo_anio' => $request->libreta_de_ultimo_anio,
             ]);
 
-            return back()->with('success', 'Requisitos actualizados.');
+            // Intentar asignación automática de grupo si ambas condiciones se cumplen
+            $grupo = $this->grupoService->intentarAsignacionAutomatica($postulante->fresh()->load('pago'));
+
+            $mensaje = 'Requisitos actualizados.';
+            if ($grupo) {
+                $mensaje .= " El postulante fue asignado automáticamente al grupo {$grupo->nombre}.";
+            }
+
+            return back()->with('success', $mensaje);
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
