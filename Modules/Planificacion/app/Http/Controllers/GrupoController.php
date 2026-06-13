@@ -58,6 +58,16 @@ class GrupoController extends Controller
             'id_turno' => 'required|exists:turno,id_turno',
         ]);
 
+        $aulaOcupada = Grupo::where('id_aula', $request->id_aula)
+            ->where('id_horario', $request->id_horario)
+            ->exists();
+
+        if ($aulaOcupada) {
+            return back()->withInput()->withErrors([
+                'id_aula' => 'El aula seleccionada ya está ocupada en este horario.'
+            ]);
+        }
+
         try {
             Grupo::create($request->only('nombre', 'capacidad_maxima', 'id_horario', 'id_aula', 'id_turno'));
             return redirect()->route('admin.grupos.index')
@@ -92,6 +102,17 @@ class GrupoController extends Controller
             'id_aula' => 'required|exists:aula,id_aula',
             'id_turno' => 'required|exists:turno,id_turno',
         ]);
+
+        $aulaOcupada = Grupo::where('id_aula', $request->id_aula)
+            ->where('id_horario', $request->id_horario)
+            ->where('id_grupo', '!=', $id)
+            ->exists();
+
+        if ($aulaOcupada) {
+            return back()->withInput()->withErrors([
+                'id_aula' => 'El aula seleccionada ya está ocupada en este horario.'
+            ]);
+        }
 
         try {
             Grupo::findOrFail($id)->update($request->only('nombre', 'capacidad_maxima', 'id_horario', 'id_aula', 'id_turno'));

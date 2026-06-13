@@ -37,7 +37,7 @@
                         <tr>
                             <td><strong>{{ $grupo->nombre }}</strong></td>
                             <td><span class="badge badge-info">{{ $grupo->turno?->nombre ?? '—' }}</span></td>
-                            <td>{{ $grupo->horario?->rango ?? '—' }}</td>
+                            <td>{{ $grupo->horario_rango }}</td>
                             <td>{{ $grupo->aula?->descripcion ?? '—' }}</td>
                             <td>{{ $grupo->capacidad_maxima }}</td>
                             <td>

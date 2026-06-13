@@ -11,7 +11,7 @@
         <h3 style="color: var(--accent); margin-bottom: 8px;">Información de la Materia</h3>
         <p style="margin-bottom: 4px;"><strong>Grupo:</strong> {{ $grupo->nombre }}</p>
         <p style="margin-bottom: 4px;"><strong>Aula:</strong> {{ $grupo->aula->descripcion ?? '—' }} ({{ $grupo->aula->nombre ?? '—' }})</p>
-        <p style="margin-bottom: 0;"><strong>Horario:</strong> {{ $grupo->horario->rango ?? '—' }} — {{ $grupo->turno->nombre ?? '—' }}</p>
+        <p style="margin-bottom: 0;"><strong>Horario:</strong> {{ $grupo->horario_rango }} — {{ $grupo->turno->nombre ?? '—' }}</p>
     </div>
 </div>
 

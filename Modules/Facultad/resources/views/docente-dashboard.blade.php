@@ -107,7 +107,7 @@
                                     <tr>
                                         <td>{{ $a->grupo->nombre ?? '—' }}</td>
                                         <td>{{ $a->materia->nombre ?? '—' }}</td>
-                                        <td>{{ $a->grupo->horario->rango ?? '—' }}</td>
+                                        <td>{{ $a->grupo->horario_rango }}</td>
                                         <td>
                                             <a href="{{ route('docente.grupos.materia.estudiantes', [$a->id_grupo, $a->id_materia]) }}" class="btn btn-primary btn-sm">
                                                 Alumnos y Notas

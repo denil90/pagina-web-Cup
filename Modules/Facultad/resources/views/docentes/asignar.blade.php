@@ -31,7 +31,7 @@
                         <option value="">Seleccione un grupo...</option>
                         @foreach($grupos as $grupo)
                             <option value="{{ $grupo->id_grupo }}">
-                                {{ $grupo->nombre }} — {{ $grupo->turno?->nombre ?? 'Sin turno' }} ({{ $grupo->horario?->rango ?? 'Sin horario' }})
+                                {{ $grupo->nombre }} — {{ $grupo->turno?->nombre ?? 'Sin turno' }} ({{ $grupo->horario_rango }})
                             </option>
                         @endforeach
                     </select>
@@ -78,7 +78,7 @@
                                 <td>{{ $asig->grupo->nombre }}</td>
                                 <td><span class="badge badge-primary">{{ $asig->materia->nombre }}</span></td>
                                 <td>{{ $asig->grupo->turno?->nombre ?? '—' }}</td>
-                                <td>{{ $asig->grupo->horario?->rango ?? '—' }}</td>
+                                <td>{{ $asig->grupo->horario_rango }}</td>
                                 <td>
                                     <form action="{{ route('admin.docentes.asignacion.destroy', $asig->id) }}" method="POST" onsubmit="return confirm('¿Remover?')">
                                         @csrf @method('DELETE')
