@@ -375,31 +375,44 @@ PROMPT;
 
     public function rendimientoPorGrupo(Request $request)
     {
-        $request->validate(['id_grupo' => 'required|exists:grupo,id_grupo']);
+        $request->validate([
+            'id_grupo' => 'required|exists:grupo,id_grupo',
+            'id_gestion' => 'required|exists:gestion,id_gestion'
+        ]);
 
         $grupo = Grupo::with('turno')->findOrFail($request->id_grupo);
-        $datos = $this->reporteService->rendimientoPorGrupo($request->id_grupo);
+        $gestion = Gestion::findOrFail($request->id_gestion);
+        $datos = $this->reporteService->rendimientoPorGrupo($request->id_grupo, $request->id_gestion);
 
         return view('evaluacion::reportes.resultado', [
-            'titulo' => "Rendimiento - Grupo {$grupo->nombre}",
+            'titulo' => "Rendimiento - Grupo {$grupo->nombre} - {$gestion->nombreCompleto}",
             'tipo' => 'rendimiento_grupo',
             'datos' => $datos,
             'grupo' => $grupo,
+            'gestion' => $gestion,
         ]);
     }
 
     public function docenteDestacado(Request $request)
     {
-        $request->validate(['id_gestion' => 'required|exists:gestion,id_gestion']);
+        $request->validate([
+            'id_gestion' => 'required|exists:gestion,id_gestion',
+            'id_grupo' => 'nullable|exists:grupo,id_grupo',
+        ]);
 
         $gestion = Gestion::findOrFail($request->id_gestion);
-        $ranking = $this->reporteService->docenteConMayorAprobacion($request->id_gestion);
+        $grupo = $request->id_grupo ? Grupo::find($request->id_grupo) : null;
+        $ranking = $this->reporteService->docenteConMayorAprobacion($request->id_gestion, null, null, $request->id_grupo);
+
+        $titulo = "Ranking Docentes - {$gestion->nombreCompleto}";
+        if ($grupo) $titulo .= " - Grupo {$grupo->nombre}";
 
         return view('evaluacion::reportes.resultado', [
-            'titulo' => "Ranking Docentes - {$gestion->nombreCompleto}",
+            'titulo' => $titulo,
             'tipo' => 'docente_destacado',
             'datos' => $ranking,
             'gestion' => $gestion,
+            'grupo' => $grupo,
         ]);
     }
 
@@ -419,16 +432,24 @@ PROMPT;
 
     public function admitidosPorCarrera(Request $request)
     {
-        $request->validate(['id_gestion' => 'required|exists:gestion,id_gestion']);
+        $request->validate([
+            'id_gestion' => 'required|exists:gestion,id_gestion',
+            'id_grupo' => 'nullable|exists:grupo,id_grupo',
+        ]);
 
         $gestion = Gestion::findOrFail($request->id_gestion);
-        $datos = $this->reporteService->admitidosPorCarrera($request->id_gestion);
+        $grupo = $request->id_grupo ? Grupo::find($request->id_grupo) : null;
+        $datos = $this->reporteService->admitidosPorCarrera($request->id_gestion, $request->id_grupo);
+
+        $titulo = "Admitidos por Carrera - {$gestion->nombreCompleto}";
+        if ($grupo) $titulo .= " - Grupo {$grupo->nombre}";
 
         return view('evaluacion::reportes.resultado', [
-            'titulo' => "Admitidos por Carrera - {$gestion->nombreCompleto}",
+            'titulo' => $titulo,
             'tipo' => 'por_carrera',
             'datos' => $datos,
             'gestion' => $gestion,
+            'grupo' => $grupo,
         ]);
     }
 
@@ -450,6 +471,8 @@ PROMPT;
         $request->validate([
             'tipo' => 'required|string',
             'id_gestion' => 'nullable|exists:gestion,id_gestion',
+            'id_grupo' => 'nullable|exists:grupo,id_grupo',
+            'gestiones' => 'nullable|array',
         ]);
 
         $datos = $this->obtenerDatosParaCsv($request);
@@ -464,18 +487,18 @@ PROMPT;
                 'gestion' => Gestion::find($request->id_gestion),
             ],
             'rendimiento_grupo' => [
-                'rendimiento' => $this->reporteService->rendimientoPorGrupo($request->id_grupo),
+                'rendimiento' => $this->reporteService->rendimientoPorGrupo($request->id_grupo, $request->id_gestion),
                 'grupo' => Grupo::with('turno')->find($request->id_grupo),
             ],
             'docente_destacado' => [
-                'ranking' => $this->reporteService->docenteConMayorAprobacion($request->id_gestion),
+                'ranking' => $this->reporteService->docenteConMayorAprobacion($request->id_gestion, null, null, $request->id_grupo),
                 'gestion' => Gestion::find($request->id_gestion),
             ],
             'comparativa' => [
                 'comparativa' => $this->admisionService->comparativaGestiones($request->gestiones ?? []),
             ],
             'por_carrera' => [
-                'por_carrera' => $this->reporteService->admitidosPorCarrera($request->id_gestion),
+                'por_carrera' => $this->reporteService->admitidosPorCarrera($request->id_gestion, $request->id_grupo),
                 'gestion' => Gestion::find($request->id_gestion),
             ],
             default => [],
@@ -484,21 +507,38 @@ PROMPT;
 
     private function obtenerDatosParaCsv(Request $request): array
     {
-        if ($request->tipo === 'aprobados_gestion') {
-            $admitidos = $this->reporteService->aprobadosPorGestion($request->id_gestion);
-            return [
+        return match ($request->tipo) {
+            'aprobados_gestion' => [
                 'cabeceras' => ['Nombre', 'Apellidos', 'CI', 'Carrera Admitida', 'Nota Final', 'Opción'],
-                'filas' => $admitidos->map(fn($a) => [
-                    $a->nombre,
-                    $a->apellidos,
-                    $a->ci,
-                    $a->carrera,
-                    $a->nota_final_cup,
-                    $a->opcion_ingreso,
-                ])->toArray(),
-            ];
-        }
-
-        return ['cabeceras' => [], 'filas' => []];
+                'filas' => $this->reporteService->aprobadosPorGestion($request->id_gestion)
+                    ->map(fn($a) => [$a->nombre, $a->apellidos, $a->ci, $a->carrera, $a->nota_final_cup, $a->opcion_ingreso])
+                    ->toArray(),
+            ],
+            'rendimiento_grupo' => [
+                'cabeceras' => ['Estudiante', 'CI', 'Promedio', 'Estado'],
+                'filas' => collect($this->reporteService->rendimientoPorGrupo($request->id_grupo, $request->id_gestion)['postulantes'])
+                    ->map(fn($p) => [$p->nombre, $p->ci, $p->promedio, $p->estado])
+                    ->toArray(),
+            ],
+            'docente_destacado' => [
+                'cabeceras' => ['Docente', 'Estudiantes', 'Aprobados', '% Aprobación'],
+                'filas' => collect($this->reporteService->docenteConMayorAprobacion($request->id_gestion, null, null, $request->id_grupo))
+                    ->map(fn($d) => [$d['docente']->usuario->nombreCompleto, $d['total_estudiantes'], $d['aprobados'], $d['porcentaje'] . '%'])
+                    ->toArray(),
+            ],
+            'por_carrera' => [
+                'cabeceras' => ['Carrera', 'Cupo Máximo', 'Admitidos', '1ª Opción', '2ª Opción'],
+                'filas' => $this->reporteService->admitidosPorCarrera($request->id_gestion, $request->id_grupo)
+                    ->map(fn($d) => [$d->carrera, $d->cupo_maximo, $d->admitidos, $d->primera_opcion, $d->segunda_opcion])
+                    ->toArray(),
+            ],
+            'comparativa' => [
+                'cabeceras' => ['Gestión', 'Postulantes', 'Admitidos', 'No Admitidos', 'Tasa Admisión'],
+                'filas' => $this->admisionService->comparativaGestiones($request->gestiones ?? [])
+                    ->map(fn($d) => [$d['gestion'], $d['postulantes'], $d['admitidos'], $d['no_admitidos'], $d['tasa_admision'] . '%'])
+                    ->toArray(),
+            ],
+            default => ['cabeceras' => [], 'filas' => []],
+        };
     }
 }

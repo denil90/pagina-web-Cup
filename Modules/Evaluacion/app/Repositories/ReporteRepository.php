@@ -43,11 +43,12 @@ final class ReporteRepository
      * Reporte: Rendimiento por grupo.
      * Cruza: postulante ← usuario + notas + grupo
      */
-    public function getReportRendimientoPorGrupo(int $grupoId): array
+    public function getReportRendimientoPorGrupo(int $grupoId, int $gestionId): array
     {
         $postulantes = DB::table('postulante as p')
             ->join('usuario as u', 'p.id_postulante', '=', 'u.id_usuario')
             ->where('p.id_grupo', $grupoId)
+            ->where('p.id_gestion', $gestionId)
             ->select([
                 'p.id_postulante',
                 'u.nombre',
@@ -94,7 +95,7 @@ final class ReporteRepository
      * Reporte: Ranking de docentes por porcentaje de aprobados.
      * Cruza: docente_grupo ← docente ← usuario + grupo ← postulante ← notas
      */
-    public function getReportDocenteDestacado(int $gestionId, ?string $ciudad = null, ?string $colegio = null): Collection
+    public function getReportDocenteDestacado(int $gestionId, ?string $ciudad = null, ?string $colegio = null, ?int $grupoId = null): Collection
     {
         // Subquery: postulantes con todas las materias aprobadas
         $postulantesMaterias = DB::table('notas')
@@ -110,6 +111,9 @@ final class ReporteRepository
             ->join('postulante as p', 'p.id_grupo', '=', 'g.id_grupo')
             ->joinSub($postulantesMaterias, 'nm', 'nm.id_postulante', '=', 'p.id_postulante')
             ->where('p.id_gestion', $gestionId)
+            ->when($grupoId, function($q) use ($grupoId) {
+                $q->where('p.id_grupo', $grupoId);
+            })
             ->when($ciudad, function($q) use ($ciudad) {
                 $q->where('p.ciudad', $ciudad);
             })
@@ -162,12 +166,15 @@ final class ReporteRepository
      * Reporte: Admitidos por carrera con estadísticas de cupo.
      * Cruza: admision_final ← carrera + postulante
      */
-    public function getReportAdmitidosPorCarrera(int $gestionId): Collection
+    public function getReportAdmitidosPorCarrera(int $gestionId, ?int $grupoId = null): Collection
     {
         return DB::table('admision_final as af')
             ->join('carrera as c', 'af.id_carrera_admitida', '=', 'c.id')
             ->join('postulante as p', 'af.id_postulante', '=', 'p.id_postulante')
             ->where('p.id_gestion', $gestionId)
+            ->when($grupoId, function($q) use ($grupoId) {
+                $q->where('p.id_grupo', $grupoId);
+            })
             ->groupBy('c.id', 'c.nombre', 'c.cupo_maximo')
             ->select([
                 'c.nombre as carrera',

@@ -43,15 +43,15 @@ class ReporteService
         return $this->reporteRepository->getReportAdmitidosPorGestion($gestionId);
     }
 
-    public function rendimientoPorGrupo(int $grupoId): array
+    public function rendimientoPorGrupo(int $grupoId, int $gestionId): array
     {
-        return $this->reporteRepository->getReportRendimientoPorGrupo($grupoId);
+        return $this->reporteRepository->getReportRendimientoPorGrupo($grupoId, $gestionId);
     }
 
-    public function docenteConMayorAprobacion(int $gestionId, ?string $ciudad = null, ?string $colegio = null): array
+    public function docenteConMayorAprobacion(int $gestionId, ?string $ciudad = null, ?string $colegio = null, ?int $grupoId = null): array
     {
         // El controller espera una lista de arrays con 'docente' (objeto con 'usuario'), 'total_estudiantes', 'aprobados', 'porcentaje'
-        $ranking = $this->reporteRepository->getReportDocenteDestacado($gestionId, $ciudad, $colegio);
+        $ranking = $this->reporteRepository->getReportDocenteDestacado($gestionId, $ciudad, $colegio, $grupoId);
         
         return $ranking->map(function ($row) {
             return [
@@ -69,9 +69,9 @@ class ReporteService
         })->all();
     }
 
-    public function admitidosPorCarrera(int $gestionId): Collection
+    public function admitidosPorCarrera(int $gestionId, ?int $grupoId = null): Collection
     {
-        return $this->reporteRepository->getReportAdmitidosPorCarrera($gestionId);
+        return $this->reporteRepository->getReportAdmitidosPorCarrera($gestionId, $grupoId);
     }
 
     public function exportarPdf(string $tipo, array $datos, string $nombreArchivo): \Illuminate\Http\Response

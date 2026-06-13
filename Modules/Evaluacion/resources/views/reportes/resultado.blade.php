@@ -3,14 +3,22 @@
 @section('header', $titulo)
 @section('header-actions')
     <div class="btn-group" style="display: flex; gap: 8px;">
-        @if($tipo === 'aprobados_gestion' && isset($gestion))
-            <form method="POST" action="{{ route('admin.reportes.exportar.csv') }}" style="display:inline;">
-                @csrf
-                <input type="hidden" name="tipo" value="{{ $tipo }}">
+        <form method="POST" action="{{ route('admin.reportes.exportar.csv') }}" style="display:inline;">
+            @csrf
+            <input type="hidden" name="tipo" value="{{ $tipo }}">
+            @if(isset($gestion))
                 <input type="hidden" name="id_gestion" value="{{ $gestion->id_gestion }}">
-                <button class="btn btn-success btn-sm">Exportar CSV</button>
-            </form>
-        @endif
+            @endif
+            @if(isset($grupo))
+                <input type="hidden" name="id_grupo" value="{{ $grupo->id_grupo }}">
+            @endif
+            @if(isset($gestiones) && is_array($gestiones))
+                @foreach($gestiones as $gId)
+                    <input type="hidden" name="gestiones[]" value="{{ $gId }}">
+                @endforeach
+            @endif
+            <button class="btn btn-success btn-sm">Exportar CSV</button>
+        </form>
 
         <form method="POST" action="{{ route('admin.reportes.exportar.pdf') }}" style="display:inline;">
             @csrf

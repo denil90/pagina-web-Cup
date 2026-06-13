@@ -28,7 +28,14 @@
             <p class="text-muted mb-2">% de aprobación, lista de postulantes con notas por grupo.</p>
             <form method="POST" action="{{ route('admin.reportes.rendimiento') }}">
                 @csrf
+                <select name="id_gestion" class="form-control mb-2" required>
+                    <option value="">Seleccione Gestión...</option>
+                    @foreach($gestiones as $g)
+                        <option value="{{ $g->id_gestion }}">{{ $g->nombreCompleto }}</option>
+                    @endforeach
+                </select>
                 <select name="id_grupo" class="form-control mb-2" required>
+                    <option value="">Seleccione Grupo...</option>
                     @foreach($grupos as $g)
                         <option value="{{ $g->id_grupo }}">{{ $g->nombre }} — {{ $g->turno?->nombre ?? '' }}</option>
                     @endforeach
@@ -46,8 +53,15 @@
             <form method="POST" action="{{ route('admin.reportes.docente') }}">
                 @csrf
                 <select name="id_gestion" class="form-control mb-2" required>
+                    <option value="">Seleccione Gestión...</option>
                     @foreach($gestiones as $g)
                         <option value="{{ $g->id_gestion }}">{{ $g->nombreCompleto }}</option>
+                    @endforeach
+                </select>
+                <select name="id_grupo" class="form-control mb-2">
+                    <option value="">Todos los grupos...</option>
+                    @foreach($grupos as $g)
+                        <option value="{{ $g->id_grupo }}">{{ $g->nombre }}</option>
                     @endforeach
                 </select>
                 <button class="btn btn-primary btn-sm w-100">Generar</button>
@@ -63,8 +77,15 @@
             <form method="POST" action="{{ route('admin.reportes.carreras') }}">
                 @csrf
                 <select name="id_gestion" class="form-control mb-2" required>
+                    <option value="">Seleccione Gestión...</option>
                     @foreach($gestiones as $g)
                         <option value="{{ $g->id_gestion }}">{{ $g->nombreCompleto }}</option>
+                    @endforeach
+                </select>
+                <select name="id_grupo" class="form-control mb-2">
+                    <option value="">Todos los grupos...</option>
+                    @foreach($grupos as $g)
+                        <option value="{{ $g->id_grupo }}">{{ $g->nombre }}</option>
                     @endforeach
                 </select>
                 <button class="btn btn-primary btn-sm w-100">Generar</button>
