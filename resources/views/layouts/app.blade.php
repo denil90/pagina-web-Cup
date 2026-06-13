@@ -60,6 +60,11 @@
                             <span class="icon"></span> Postulantes
                         </a>
 
+                        <div class="nav-section-title">Seguridad</div>
+                        <a href="{{ route('admin.bitacora.index') }}" class="nav-link {{ request()->routeIs('admin.bitacora.*') ? 'active' : '' }}">
+                            <span class="icon"></span> Bitácora
+                        </a>
+
                         <div class="nav-section-title">Evaluación</div>
                         <a href="{{ route('admin.notas.index') }}" class="nav-link {{ request()->routeIs('admin.notas.*') ? 'active' : '' }}">
                             <span class="icon"></span> Notas

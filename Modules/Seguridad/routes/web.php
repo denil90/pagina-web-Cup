@@ -9,3 +9,10 @@ Route::middleware('web')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
+
+Route::middleware(['web', 'auth', 'verificar.rol:administrador'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/bitacora', [\Modules\Seguridad\Http\Controllers\BitacoraController::class, 'index'])->name('bitacora.index');
+    });

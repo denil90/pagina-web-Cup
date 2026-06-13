@@ -39,11 +39,18 @@ class LoginController extends Controller
         Auth::login($usuario);
         $request->session()->regenerate();
 
+        \Modules\Seguridad\Models\Bitacora::registrar('INICIO DE SESIÓN', 'Seguridad', "El usuario ingresó al sistema con rol: {$usuario->rol}");
+
         return $this->redirigirSegunRol($usuario);
     }
 
     public function logout(Request $request)
     {
+        if (Auth::check()) {
+            $rol = Auth::user()->rol;
+            \Modules\Seguridad\Models\Bitacora::registrar('CIERRE DE SESIÓN', 'Seguridad', "El usuario cerró sesión (Rol: {$rol})");
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
