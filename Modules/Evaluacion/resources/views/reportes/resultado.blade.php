@@ -26,9 +26,9 @@
                         @foreach($datos as $i => $a)
                             <tr>
                                 <td>{{ $i + 1 }}</td>
-                                <td>{{ $a->postulante->usuario->nombreCompleto }}</td>
-                                <td>{{ $a->postulante->usuario->ci }}</td>
-                                <td>{{ $a->carrera->nombre }}</td>
+                                <td>{{ $a->nombre }} {{ $a->apellidos }}</td>
+                                <td>{{ $a->ci }}</td>
+                                <td>{{ $a->carrera }}</td>
                                 <td><strong>{{ $a->nota_final_cup }}</strong></td>
                                 <td><span class="badge {{ $a->opcion_ingreso === 'PRIMERA OPCION' ? 'badge-success' : 'badge-warning' }}">{{ $a->opcion_ingreso }}</span></td>
                             </tr>
@@ -55,9 +55,9 @@
                     <tbody>
                         @foreach($datos['postulantes'] as $p)
                             <tr>
-                                <td>{{ $p->usuario->nombreCompleto }}</td>
-                                <td><strong>{{ $p->promedioGeneral() }}</strong></td>
-                                <td><span class="badge {{ $p->aproboTodasLasMaterias() ? 'badge-success' : 'badge-danger' }}">{{ $p->aproboTodasLasMaterias() ? 'APROBADO' : 'REPROBADO' }}</span></td>
+                                <td>{{ $p->nombre }}</td>
+                                <td><strong>{{ $p->promedio }}</strong></td>
+                                <td><span class="badge {{ $p->estado === 'APROBADO' ? 'badge-success' : 'badge-danger' }}">{{ $p->estado }}</span></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -119,11 +119,11 @@
                     <tbody>
                         @foreach($datos as $d)
                             <tr>
-                                <td><strong>{{ $d['carrera'] }}</strong></td>
-                                <td>{{ $d['cupo_maximo'] }}</td>
-                                <td><span class="badge badge-primary">{{ $d['admitidos'] }}</span></td>
-                                <td>{{ $d['primera_opcion'] }}</td>
-                                <td>{{ $d['segunda_opcion'] }}</td>
+                                <td><strong>{{ $d->carrera }}</strong></td>
+                                <td>{{ $d->cupo_maximo }}</td>
+                                <td><span class="badge badge-primary">{{ $d->admitidos }}</span></td>
+                                <td>{{ $d->primera_opcion }}</td>
+                                <td>{{ $d->segunda_opcion }}</td>
                             </tr>
                         @endforeach
                     </tbody>

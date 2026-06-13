@@ -18,10 +18,20 @@ class CarreraController extends Controller
         private readonly DeleteCarreraUseCase $deleteCarrera,
     ) {}
 
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
+        $gestiones = \Illuminate\Support\Facades\DB::table('gestion')
+            ->orderBy('anio', 'desc')
+            ->orderBy('semestre', 'desc')
+            ->get();
+
+        $id_gestion = $request->input('id_gestion');
+        if (!$id_gestion && $gestiones->isNotEmpty()) {
+            $id_gestion = $gestiones->first()->id_gestion;
+        }
+
         $carreras = Carrera::all();
-        return view('academico::carreras.index', compact('carreras'));
+        return view('academico::carreras.index', compact('carreras', 'gestiones', 'id_gestion'));
     }
 
     public function create()

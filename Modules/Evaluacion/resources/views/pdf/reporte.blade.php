@@ -128,9 +128,9 @@
                 @foreach($datos['admitidos'] as $i => $a)
                     <tr>
                         <td>{{ $i + 1 }}</td>
-                        <td>{{ $a->postulante->usuario->nombreCompleto }}</td>
-                        <td>{{ $a->postulante->usuario->ci }}</td>
-                        <td>{{ $a->carrera->nombre }}</td>
+                        <td>{{ $a->nombre }} {{ $a->apellidos }}</td>
+                        <td>{{ $a->ci }}</td>
+                        <td>{{ $a->carrera }}</td>
                         <td><strong>{{ $a->nota_final_cup }}</strong></td>
                         <td><span class="badge {{ $a->opcion_ingreso === 'PRIMERA OPCION' ? 'badge-success' : 'badge-warning' }}">{{ $a->opcion_ingreso }}</span></td>
                     </tr>

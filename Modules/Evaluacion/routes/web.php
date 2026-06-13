@@ -36,6 +36,8 @@ Route::middleware('web')->group(function () {
 
             // Reportes
             Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+            Route::get('/reportes-dinamicos', [ReporteController::class, 'dinamicos'])->name('reportes.dinamicos');
+            Route::post('/reportes-dinamicos/ai-query', [ReporteController::class, 'aiQuery'])->name('reportes.dinamicos.ai-query');
             Route::post('/reportes/aprobados', [ReporteController::class, 'aprobadosPorGestion'])->name('reportes.aprobados');
             Route::post('/reportes/rendimiento', [ReporteController::class, 'rendimientoPorGrupo'])->name('reportes.rendimiento');
             Route::post('/reportes/docente', [ReporteController::class, 'docenteDestacado'])->name('reportes.docente');

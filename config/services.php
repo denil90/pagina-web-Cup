@@ -40,4 +40,8 @@ return [
         'mode' => env('PAYPAL_MODE', 'sandbox'),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+    ],
+
 ];

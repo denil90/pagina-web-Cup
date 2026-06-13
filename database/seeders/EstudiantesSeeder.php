@@ -29,7 +29,7 @@ class EstudiantesSeeder extends Seeder
                 $gestionIds[$key] = DB::table('gestion')->insertGetId([
                     'semestre' => $gInfo['semestre'],
                     'anio' => $gInfo['anio']
-                ]);
+                ], 'id_gestion');
             } else {
                 $gestionIds[$key] = $g->id_gestion;
             }
@@ -41,7 +41,7 @@ class EstudiantesSeeder extends Seeder
         foreach ($turnosPredefinidos as $tName) {
             $t = DB::table('turno')->where('nombre', $tName)->first();
             if (!$t) {
-                $turnoIds[$tName] = DB::table('turno')->insertGetId(['nombre' => $tName]);
+                $turnoIds[$tName] = DB::table('turno')->insertGetId(['nombre' => $tName], 'id_turno');
             } else {
                 $turnoIds[$tName] = $t->id_turno;
             }
@@ -54,20 +54,27 @@ class EstudiantesSeeder extends Seeder
                 'nombre' => 'Aula 101',
                 'edificio' => 'Edificio A',
                 'capacidad' => 70
-            ]);
+            ], 'id_aula');
             $aulas[] = DB::table('aula')->insertGetId([
                 'nombre' => 'Aula 102',
                 'edificio' => 'Edificio A',
                 'capacidad' => 70
-            ]);
+            ], 'id_aula');
         }
 
-        // Limpiar datos de postulantes anteriores para asegurar una siembra limpia
-        DB::table('admision_final')->delete();
-        DB::table('notas')->delete();
-        DB::table('pago')->delete();
-        DB::table('postulante')->delete();
-        DB::table('usuario')->where('rol', 'postulante')->delete();
+        // Limpiar únicamente datos de postulantes sembrados anteriormente para asegurar una siembra limpia sin afectar datos reales
+        $seededUserIds = DB::table('usuario')
+            ->where('correo', 'LIKE', '%@postulante.cup.edu')
+            ->pluck('id_usuario')
+            ->toArray();
+
+        if (!empty($seededUserIds)) {
+            DB::table('admision_final')->whereIn('id_postulante', $seededUserIds)->delete();
+            DB::table('notas')->whereIn('id_postulante', $seededUserIds)->delete();
+            DB::table('pago')->whereIn('id_postulante', $seededUserIds)->delete();
+            DB::table('postulante')->whereIn('id_postulante', $seededUserIds)->delete();
+            DB::table('usuario')->whereIn('id_usuario', $seededUserIds)->delete();
+        }
 
         // 4. Asegurar que existan las aulas adicionales solicitadas (Mañana: 13-17, Tarde: 23-27, Noche: 33-37)
         $aulasAdicionales = [
@@ -109,7 +116,7 @@ class EstudiantesSeeder extends Seeder
                     'capacidad_maxima' => 70,
                     'id_aula' => $aulas[array_rand($aulas)],
                     'id_turno' => $tId,
-                ]);
+                ], 'id_grupo');
             } else {
                 $grId = $gr->id_grupo;
                 // Forzar capacidad máxima a 70
@@ -137,7 +144,7 @@ class EstudiantesSeeder extends Seeder
                     'telefono' => '789456' . $i,
                     'rol' => 'docente',
                     'correo' => 'docente' . $i . '_' . Str::random(3) . '@cup.edu',
-                ]);
+                ], 'id_usuario');
                 DB::table('docente')->insert([
                     'id_docente' => $userId,
                     'titulo_profesional' => 'Licenciado en Ciencias',
@@ -203,7 +210,7 @@ class EstudiantesSeeder extends Seeder
                         'dia' => 'Lunes',
                         'hora_inicio' => $b['inicio'],
                         'hora_final' => $b['fin']
-                    ]);
+                    ], 'id_horario');
                 } else {
                     $hId = $h->id_horario;
                 }
@@ -246,7 +253,7 @@ class EstudiantesSeeder extends Seeder
                 'telefono' => '789456' . $newIndex,
                 'rol' => 'docente',
                 'correo' => 'docente' . $newIndex . '_' . Str::random(3) . '@cup.edu',
-            ]);
+            ], 'id_usuario');
             DB::table('docente')->insert([
                 'id_docente' => $userId,
                 'titulo_profesional' => 'Licenciado en Ciencias',
@@ -324,7 +331,7 @@ class EstudiantesSeeder extends Seeder
                 'capacidad_maxima' => 70,
                 'id_aula' => $aulaId,
                 'id_turno' => $tId,
-            ]);
+            ], 'id_grupo');
 
             // Asignar docentes a este nuevo grupo
             $materiaHorarios = [
@@ -532,8 +539,8 @@ class EstudiantesSeeder extends Seeder
         $carreras = DB::table('carrera')->pluck('id')->toArray();
         if (count($carreras) < 2) {
             // Asegurar carreras mínimas
-            $carreras[] = DB::table('carrera')->insertGetId(['nombre' => 'Ingeniería en Sistemas', 'cupo_maximo' => 200]);
-            $carreras[] = DB::table('carrera')->insertGetId(['nombre' => 'Ingeniería Informática', 'cupo_maximo' => 150]);
+            $carreras[] = DB::table('carrera')->insertGetId(['nombre' => 'Ingeniería en Sistemas', 'cupo_maximo' => 200], 'id');
+            $carreras[] = DB::table('carrera')->insertGetId(['nombre' => 'Ingeniería Informática', 'cupo_maximo' => 150], 'id');
         }
 
         $gestionesASeeder = ['2-2024', '1-2025', '2-2025'];
@@ -570,7 +577,7 @@ class EstudiantesSeeder extends Seeder
                         'rol' => 'postulante',
                         'correo' => $correo,
                         'fecha' => date('Y-m-d')
-                    ]);
+                    ], 'id_usuario');
 
                     // Elegir turno preferido y grupo correspondientes
                     $turnoElegido = array_rand($turnoIds); // 'Mañana', 'Tarde' o 'Noche'

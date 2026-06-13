@@ -168,11 +168,11 @@ BEGIN
     FROM grupo WHERE id_grupo = NEW.id_grupo;
 
     SELECT COUNT(*) INTO v_actuales_inscritos
-    FROM postulante WHERE id_grupo = NEW.id_grupo;
+    FROM postulante WHERE id_grupo = NEW.id_grupo AND id_gestion = NEW.id_gestion;
 
     IF v_actuales_inscritos >= v_capacidad_maxima THEN
-        RAISE EXCEPTION 'Error: El grupo con ID % ya alcanzó su capacidad máxima de % estudiantes.',
-            NEW.id_grupo, v_capacidad_maxima;
+        RAISE EXCEPTION 'Error: El grupo con ID % ya alcanzó su capacidad máxima de % estudiantes para la gestión %.',
+            NEW.id_grupo, v_capacidad_maxima, NEW.id_gestion;
     END IF;
 
     RETURN NEW;

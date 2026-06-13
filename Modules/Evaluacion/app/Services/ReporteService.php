@@ -48,16 +48,16 @@ class ReporteService
         return $this->reporteRepository->getReportRendimientoPorGrupo($grupoId);
     }
 
-    public function docenteConMayorAprobacion(int $gestionId): array
+    public function docenteConMayorAprobacion(int $gestionId, ?string $ciudad = null, ?string $colegio = null): array
     {
         // El controller espera una lista de arrays con 'docente' (objeto con 'usuario'), 'total_estudiantes', 'aprobados', 'porcentaje'
-        $ranking = $this->reporteRepository->getReportDocenteDestacado($gestionId);
+        $ranking = $this->reporteRepository->getReportDocenteDestacado($gestionId, $ciudad, $colegio);
         
         return $ranking->map(function ($row) {
             return [
                 'docente' => (object) [
                     'usuario' => (object) [
-                        'nombre_completo' => "{$row->nombre} {$row->apellidos}",
+                        'nombreCompleto' => "{$row->nombre} {$row->apellidos}",
                         'nombre' => $row->nombre,
                         'apellidos' => $row->apellidos,
                     ]

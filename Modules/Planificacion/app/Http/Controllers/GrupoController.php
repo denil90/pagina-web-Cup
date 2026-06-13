@@ -16,13 +16,27 @@ class GrupoController extends Controller
         private readonly GrupoService $grupoService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $grupos = Grupo::with(['horario', 'aula', 'turno'])
-            ->withCount('postulantes')
+        $gestiones = \Illuminate\Support\Facades\DB::table('gestion')
+            ->orderBy('anio', 'desc')
+            ->orderBy('semestre', 'desc')
             ->get();
 
-        return view('planificacion::grupos.index', compact('grupos'));
+        $id_gestion = $request->input('id_gestion');
+        if (!$id_gestion && $gestiones->isNotEmpty()) {
+            $id_gestion = $gestiones->first()->id_gestion;
+        }
+
+        $grupos = Grupo::with(['horario', 'aula', 'turno'])
+            ->withCount(['postulantes' => function($query) use ($id_gestion) {
+                if ($id_gestion) {
+                    $query->where('id_gestion', $id_gestion);
+                }
+            }])
+            ->get();
+
+        return view('planificacion::grupos.index', compact('grupos', 'gestiones', 'id_gestion'));
     }
 
     public function create()

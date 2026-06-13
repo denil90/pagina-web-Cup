@@ -49,7 +49,7 @@ class RegisterController extends Controller
                 'id_carrera_primera' => $request->id_carrera_primera,
                 'id_carrera_segunda' => $request->id_carrera_segunda,
                 'id_turno_preferido' => $request->id_turno_preferido,
-                'id_gestion' => Gestion::max('id_gestion'),
+                'id_gestion' => (Gestion::orderByDesc('anio')->orderByDesc('semestre')->first()->id_gestion ?? null),
             ]);
 
             DB::commit();

@@ -51,7 +51,14 @@ class Grupo extends Model
 
     public function inscritosActuales(): int
     {
-        return $this->postulantes()->count();
+        $latestGestion = class_exists('Modules\Academico\Models\Gestion')
+            ? \Modules\Academico\Models\Gestion::orderByDesc('anio')->orderByDesc('semestre')->first()
+            : \App\Models\Gestion::orderByDesc('anio')->orderByDesc('semestre')->first();
+        $currentGestionId = $latestGestion ? $latestGestion->id_gestion : null;
+
+        return $this->postulantes()
+            ->where('id_gestion', $currentGestionId)
+            ->count();
     }
 
     public function tieneDisponibilidad(): bool

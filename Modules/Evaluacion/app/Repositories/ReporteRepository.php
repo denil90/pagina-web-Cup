@@ -94,7 +94,7 @@ final class ReporteRepository
      * Reporte: Ranking de docentes por porcentaje de aprobados.
      * Cruza: docente_grupo ← docente ← usuario + grupo ← postulante ← notas
      */
-    public function getReportDocenteDestacado(int $gestionId): Collection
+    public function getReportDocenteDestacado(int $gestionId, ?string $ciudad = null, ?string $colegio = null): Collection
     {
         // Subquery: postulantes con todas las materias aprobadas
         $postulantesMaterias = DB::table('notas')
@@ -110,6 +110,12 @@ final class ReporteRepository
             ->join('postulante as p', 'p.id_grupo', '=', 'g.id_grupo')
             ->joinSub($postulantesMaterias, 'nm', 'nm.id_postulante', '=', 'p.id_postulante')
             ->where('p.id_gestion', $gestionId)
+            ->when($ciudad, function($q) use ($ciudad) {
+                $q->where('p.ciudad', $ciudad);
+            })
+            ->when($colegio, function($q) use ($colegio) {
+                $q->where('p.colegio_procedencia', $colegio);
+            })
             ->groupBy('dg.id_docente', 'u.nombre', 'u.apellidos')
             ->select([
                 'u.nombre',

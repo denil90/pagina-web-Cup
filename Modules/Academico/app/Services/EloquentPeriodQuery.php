@@ -12,7 +12,8 @@ class EloquentPeriodQuery implements PeriodQueryInterface
 {
     public function getCurrentPeriodId(): ?int
     {
-        return Gestion::max('id_gestion');
+        $latest = Gestion::orderByDesc('anio')->orderByDesc('semestre')->first();
+        return $latest ? $latest->id_gestion : null;
     }
 
     public function findById(int $periodId): ?array

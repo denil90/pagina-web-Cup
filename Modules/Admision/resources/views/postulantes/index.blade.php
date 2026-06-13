@@ -56,7 +56,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-2">{{ $postulantes->appends(request()->query())->links() }}</div>
+        <div class="mt-2">{{ $postulantes->appends(request()->query())->links('pagination::bootstrap-4') }}</div>
     </div>
 </div>
 @endsection

@@ -27,6 +27,22 @@ class Carrera extends Model
     }
 
     /**
+     * Cuenta los admitidos para una gestión específica.
+     */
+    public function admitidosCount(?int $id_gestion = null): int
+    {
+        $query = \Illuminate\Support\Facades\DB::table('admision_final')
+            ->where('id_carrera_admitida', $this->id);
+
+        if ($id_gestion) {
+            $query->join('postulante', 'postulante.id_postulante', '=', 'admision_final.id_postulante')
+                ->where('postulante.id_gestion', $id_gestion);
+        }
+
+        return $query->count();
+    }
+
+    /**
      * Los cupos disponibles se calculan consultando admision_final.
      * Pero esa tabla pertenece al módulo Evaluacion, así que esta relación
      * se usa SOLO dentro del módulo Academico para el listado.
