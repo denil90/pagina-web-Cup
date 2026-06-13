@@ -8,7 +8,7 @@ use Modules\Planificacion\Models\Grupo;
 
 class DocenteService
 {
-    private const MAX_GRUPOS_POR_DOCENTE = 5;
+    private const MAX_MATERIAS_POR_DOCENTE = 4;
 
     /**
      * Asigna un docente a un grupo para una materia.
@@ -33,13 +33,11 @@ class DocenteService
 
     private function validarCargaHoraria(int $docenteId): void
     {
-        $cantidadGrupos = DocenteGrupo::where('id_docente', $docenteId)
-            ->distinct('id_grupo')
-            ->count('id_grupo');
+        $cantidadMaterias = DocenteGrupo::where('id_docente', $docenteId)->count();
 
-        if ($cantidadGrupos >= self::MAX_GRUPOS_POR_DOCENTE) {
+        if ($cantidadMaterias >= self::MAX_MATERIAS_POR_DOCENTE) {
             throw new \RuntimeException(
-                "El docente ya alcanzó el límite máximo de " . self::MAX_GRUPOS_POR_DOCENTE . " grupos."
+                "El docente ya alcanzó el límite máximo de " . self::MAX_MATERIAS_POR_DOCENTE . " materias asignadas."
             );
         }
     }
@@ -47,6 +45,10 @@ class DocenteService
     private function validarSinCruceHorarios(int $docenteId, int $grupoId): void
     {
         $grupoNuevo = Grupo::findOrFail($grupoId);
+
+        if (!$grupoNuevo->id_horario) {
+            return;
+        }
 
         $tieneCruce = DocenteGrupo::where('id_docente', $docenteId)
             ->whereHas('grupo', function ($query) use ($grupoNuevo) {
