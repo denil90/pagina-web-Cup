@@ -76,17 +76,18 @@ class Grupo extends Model
 
     public function getHorarioRangoAttribute(): string
     {
-        if ($this->horario) {
-            return $this->horario->rango;
-        }
-
         $turnoNombre = $this->turno?->nombre;
+
         if ($turnoNombre === 'Mañana') {
             return '07:00 - 11:00';
         } elseif ($turnoNombre === 'Tarde') {
             return '14:00 - 18:00';
         } elseif ($turnoNombre === 'Noche') {
             return '19:00 - 23:00';
+        }
+
+        if ($this->horario) {
+            return $this->horario->rango;
         }
 
         return '—';

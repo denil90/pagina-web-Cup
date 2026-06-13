@@ -74,4 +74,19 @@ class ModelosTest extends TestCase
         
         $this->assertEquals('07:00 - 11:00', $grupo->horario_rango);
     }
+
+    public function test_grupo_horario_rango_con_horario_y_turno_manana()
+    {
+        $horario = new Horario([
+            'dia' => 'Lunes',
+            'hora_inicio' => '07:00',
+            'hora_final' => '09:00',
+        ]);
+        $turno = new \Modules\Planificacion\Models\Turno(['nombre' => 'Mañana']);
+        $grupo = new Grupo();
+        $grupo->setRelation('horario', $horario);
+        $grupo->setRelation('turno', $turno);
+        
+        $this->assertEquals('07:00 - 11:00', $grupo->horario_rango);
+    }
 }
