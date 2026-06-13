@@ -58,12 +58,6 @@
                         <option value="{{ $g->id_gestion }}">{{ $g->nombreCompleto }}</option>
                     @endforeach
                 </select>
-                <select name="id_grupo" class="form-control mb-2">
-                    <option value="">Todos los grupos...</option>
-                    @foreach($grupos as $g)
-                        <option value="{{ $g->id_grupo }}">{{ $g->nombre }}</option>
-                    @endforeach
-                </select>
                 <button class="btn btn-primary btn-sm w-100">Generar</button>
             </form>
         </div>
