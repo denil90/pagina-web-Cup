@@ -4,7 +4,7 @@
 @section('header-actions')
     <a href="{{ route('admin.carreras.create') }}" class="btn btn-primary btn-sm">+ Nueva Carrera</a>
 @endsection
-
+//vista para mostrar la lista de carreras, se muestra el nombre, descripcion, cupo maximo, admitidos y disponibles, ademas de un filtro por gestion para mostrar los admitidos de cada gestion
 @section('content')
 @if(isset($gestiones) && count($gestiones) > 0)
     <div class="card" style="margin-bottom: 20px;">

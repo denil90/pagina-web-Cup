@@ -9,22 +9,22 @@ use Modules\Academico\Http\Requests\StoreGestionRequest;
 use Modules\Academico\Models\Gestion;
 
 class GestionController extends Controller
-{
+{//controlador para gestionar las gestiones, se pueden crear, editar y eliminar gestiones
     public function __construct(
         private readonly CreateGestionUseCase $createGestion,
     ) {}
-
+//mostrar la lista de gestiones, se ordena por año y semestre
     public function index()
     {
         $gestiones = Gestion::orderByDesc('anio')->orderByDesc('semestre')->get();
         return view('academico::gestiones.index', compact('gestiones'));
     }
-
+//mostrar el formulario para crear una nueva gestion
     public function create()
     {
         return view('academico::gestiones.create');
     }
-
+// crear una gestion, se captura la excepcion si ya existe una gestion con el mismo año y semestre y se muestra un mensaje de error
     public function store(StoreGestionRequest $request)
     {
         $dto = new GestionDTO(
@@ -40,7 +40,7 @@ class GestionController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
-
+//editar una gestion, mostrar el formulario con los datos actuales de la gestion
     public function edit(int $id)
     {
         $gestion = Gestion::findOrFail($id);

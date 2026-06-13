@@ -8,25 +8,25 @@ use Modules\Academico\Domain\UseCases\CreateMateriaUseCase;
 use Modules\Academico\Domain\UseCases\UpdateMateriaUseCase;
 use Modules\Academico\Http\Requests\StoreMateriaRequest;
 use Modules\Academico\Models\Materia;
-
+//controlador para gestionar las materias, se pueden crear, editar y eliminar materias
 class MateriaController extends Controller
 {
     public function __construct(
         private readonly CreateMateriaUseCase $createMateria,
         private readonly UpdateMateriaUseCase $updateMateria,
     ) {}
-
+//mostrar la lista de materias, se ordena por nombre
     public function index()
     {
         $materias = Materia::all();
         return view('academico::materias.index', compact('materias'));
     }
-
+//mostrar el formulario para crear una nueva materia
     public function create()
     {
         return view('academico::materias.create');
     }
-
+//crear una materia, se captura la excepcion si el nombre de la materia ya existe o si los porcentajes no suman 100 y se muestra un mensaje de error
     public function store(StoreMateriaRequest $request)
     {
         $dto = new MateriaDTO(

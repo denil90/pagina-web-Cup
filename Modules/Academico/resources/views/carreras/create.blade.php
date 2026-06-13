@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', isset($carrera) ? 'Editar Carrera' : 'Nueva Carrera')
 @section('header', isset($carrera) ? 'Editar Carrera' : 'Nueva Carrera')
-
+//vista para crear o editar una carrera, se reutiliza el mismo formulario para ambas acciones
 @section('content')
 <div class="card" style="max-width: 600px;">
     <div class="card-body">

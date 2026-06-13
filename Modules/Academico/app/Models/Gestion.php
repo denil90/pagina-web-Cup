@@ -14,7 +14,7 @@ class Gestion extends Model
         'semestre',
         'anio',
     ];
-
+//accesor para mostrar el nombre completo de la gestion, se muestra el semestre y el año
     public function getNombreCompletoAttribute(): string
     {
         return "Gestión {$this->semestre} - {$this->anio}";
