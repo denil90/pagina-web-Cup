@@ -1,0 +1,16 @@
+graph LR
+    Seguridad[Seguridad]
+    Academico[Academico]
+    Planificacion[Planificacion]
+    Admision[Admision]
+    Evaluacion[Evaluacion]
+    Facultad[Facultad]
+
+    Admision --> Academico
+    Admision --> Seguridad
+    Evaluacion --> Admision
+    Evaluacion --> Academico
+    Evaluacion --> Planificacion
+    Facultad --> Planificacion
+    Facultad --> Academico
+    Facultad --> Seguridad

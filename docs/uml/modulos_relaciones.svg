@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333" />
+    </marker>
+    <style>
+      .box { fill:#f3f4f6; stroke:#333; stroke-width:1; rx:6; ry:6 }
+      .label { font: 14px sans-serif; fill:#111 }
+      .link { stroke:#333; stroke-width:1.5; fill:none }
+    </style>
+  </defs>
+
+  <!-- Nodes -->
+  <rect class="box" x="340" y="10" width="220" height="50" />
+  <text class="label" x="450" y="40" text-anchor="middle">Seguridad</text>
+
+  <rect class="box" x="40" y="100" width="180" height="50" />
+  <text class="label" x="130" y="130" text-anchor="middle">Academico</text>
+
+  <rect class="box" x="340" y="100" width="220" height="50" />
+  <text class="label" x="450" y="130" text-anchor="middle">Planificacion</text>
+
+  <rect class="box" x="660" y="100" width="180" height="50" />
+  <text class="label" x="750" y="130" text-anchor="middle">Admision</text>
+
+  <rect class="box" x="220" y="230" width="220" height="50" />
+  <text class="label" x="330" y="260" text-anchor="middle">Evaluacion</text>
+
+  <rect class="box" x="540" y="230" width="220" height="50" />
+  <text class="label" x="650" y="260" text-anchor="middle">Facultad</text>
+
+  <!-- Links -->
+  <path class="link" d="M750 150 C720 170, 560 170, 500 150" marker-end="url(#arrow)" />
+  <path class="link" d="M750 150 C720 130, 510 70, 470 60" marker-end="url(#arrow)" />
+
+  <path class="link" d="M450 150 C410 190, 400 230, 350 255" marker-end="url(#arrow)" />
+  <path class="link" d="M450 150 C430 180, 300 180, 260 255" marker-end="url(#arrow)" />
+
+  <path class="link" d="M130 150 C190 190, 240 230, 260 255" marker-end="url(#arrow)" />
+
+  <path class="link" d="M450 150 C490 190, 600 190, 650 255" marker-end="url(#arrow)" />
+  <path class="link" d="M350 60 C370 110, 540 110, 540 240" marker-end="url(#arrow)" />
+
+  <!-- Labels for arrows (optional) -->
+
+</svg>
