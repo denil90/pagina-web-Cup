@@ -37,28 +37,28 @@
     {{-- Info Cards --}}
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">👤</div>
+            <div class="stat-icon"></div>
             <div>
                 <div class="stat-value">{{ $usuario->nombreCompleto }}</div>
                 <div class="stat-label">Nombre Completo</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">🎓</div>
+            <div class="stat-icon"></div>
             <div>
                 <div class="stat-value" style="font-size: 1rem;">{{ $docente->titulo_profesional }}</div>
                 <div class="stat-label">Título Profesional</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📧</div>
+            <div class="stat-icon"></div>
             <div>
                 <div class="stat-value" style="font-size: 1rem;">{{ $usuario->correo }}</div>
                 <div class="stat-label">Correo Electrónico</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📋</div>
+            <div class="stat-icon"></div>
             <div>
                 @php
                     $docs = collect(['archivo_titulo', 'archivo_maestria', 'archivo_diplomado'])
@@ -74,7 +74,7 @@
     @if($docente->estado === 'PENDIENTE')
         <div class="card">
             <div class="card-header">
-                <h2>📁 Documentos Requeridos</h2>
+                <h2>Documentos Requeridos</h2>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">Suba los documentos de respaldo para agilizar la revisión de su postulación.</p>
@@ -89,7 +89,7 @@
         @if($asignaciones->isNotEmpty())
             <div class="card mt-3">
                 <div class="card-header">
-                    <h2>📚 Grupos Asignados</h2>
+                    <h2>Grupos Asignados</h2>
                 </div>
                 <div class="card-body">
                     <div class="table-container">
@@ -110,7 +110,7 @@
                                         <td>{{ $a->grupo->horario->rango ?? '—' }}</td>
                                         <td>
                                             <a href="{{ route('docente.grupos.materia.estudiantes', [$a->id_grupo, $a->id_materia]) }}" class="btn btn-primary btn-sm">
-                                                📝 Alumnos y Notas
+                                                Alumnos y Notas
                                             </a>
                                         </td>
                                     </tr>

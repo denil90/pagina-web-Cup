@@ -2,15 +2,33 @@
 @section('title', $titulo)
 @section('header', $titulo)
 @section('header-actions')
-    <div class="btn-group">
-        @if(isset($gestion))
+    <div class="btn-group" style="display: flex; gap: 8px;">
+        @if($tipo === 'aprobados_gestion' && isset($gestion))
             <form method="POST" action="{{ route('admin.reportes.exportar.csv') }}" style="display:inline;">
                 @csrf
                 <input type="hidden" name="tipo" value="{{ $tipo }}">
                 <input type="hidden" name="id_gestion" value="{{ $gestion->id_gestion }}">
-                <button class="btn btn-success btn-sm">📥 CSV</button>
+                <button class="btn btn-success btn-sm">Exportar CSV</button>
             </form>
         @endif
+
+        <form method="POST" action="{{ route('admin.reportes.exportar.pdf') }}" style="display:inline;">
+            @csrf
+            <input type="hidden" name="tipo" value="{{ $tipo }}">
+            @if(isset($gestion))
+                <input type="hidden" name="id_gestion" value="{{ $gestion->id_gestion }}">
+            @endif
+            @if(isset($grupo))
+                <input type="hidden" name="id_grupo" value="{{ $grupo->id_grupo }}">
+            @endif
+            @if(isset($gestiones) && is_array($gestiones))
+                @foreach($gestiones as $gId)
+                    <input type="hidden" name="gestiones[]" value="{{ $gId }}">
+                @endforeach
+            @endif
+            <button class="btn btn-primary btn-sm">Exportar PDF</button>
+        </form>
+
         <a href="{{ route('admin.reportes.index') }}" class="btn btn-secondary btn-sm">← Volver</a>
     </div>
 @endsection
@@ -41,10 +59,10 @@
 
 @elseif($tipo === 'rendimiento_grupo')
     <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">👥</div><div><div class="stat-value">{{ $datos['total'] }}</div><div class="stat-label">Total</div></div></div>
-        <div class="stat-card"><div class="stat-icon">✅</div><div><div class="stat-value">{{ $datos['aprobados'] }}</div><div class="stat-label">Aprobados</div></div></div>
-        <div class="stat-card"><div class="stat-icon">❌</div><div><div class="stat-value">{{ $datos['reprobados'] }}</div><div class="stat-label">Reprobados</div></div></div>
-        <div class="stat-card"><div class="stat-icon">📊</div><div><div class="stat-value">{{ $datos['porcentaje_aprobacion'] }}%</div><div class="stat-label">% Aprobación</div></div></div>
+        <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $datos['total'] }}</div><div class="stat-label">Total</div></div></div>
+        <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $datos['aprobados'] }}</div><div class="stat-label">Aprobados</div></div></div>
+        <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $datos['reprobados'] }}</div><div class="stat-label">Reprobados</div></div></div>
+        <div class="stat-card"><div class="stat-icon"></div><div><div class="stat-value">{{ $datos['porcentaje_aprobacion'] }}%</div><div class="stat-label">% Aprobación</div></div></div>
     </div>
 
     <div class="card">

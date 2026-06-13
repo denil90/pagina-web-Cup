@@ -71,7 +71,7 @@
                             <span class="icon"></span> Reportes
                         </a>
                         <a href="{{ route('admin.reportes.dinamicos') }}" class="nav-link {{ request()->routeIs('admin.reportes.dinamicos') ? 'active' : '' }}">
-                            <span class="icon">📊</span> Reportes Dinámicos
+                            <span class="icon"></span> Reportes Dinámicos
                         </a>
                     @elseif(Auth::user()->esDocente())
                         {{-- Menú Docente --}}

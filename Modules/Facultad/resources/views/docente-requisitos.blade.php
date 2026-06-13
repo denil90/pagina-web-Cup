@@ -7,7 +7,7 @@
     <a href="{{ route('docente.dashboard') }}" class="back-to-portal mb-3" style="display: inline-flex;">← Volver al Dashboard</a>
 
     <div class="alert alert-info" style="font-size: 0.88rem;">
-        📋 Ingrese los nombres de sus grados académicos y suba los documentos correspondientes en formato PDF (máx. 5MB). Un administrador revisará su postulación.
+        Ingrese los nombres de sus grados académicos y suba los documentos correspondientes en formato PDF (máx. 5MB). Un administrador revisará su postulación.
     </div>
 
     <div class="requisitos-grid">
@@ -17,12 +17,11 @@
                 @if($docente->archivo_titulo)
                     <div class="requisito-check">✓</div>
                 @else
-                    🎓
                 @endif
             </div>
             <div class="requisito-title">Título Profesional</div>
             <div class="requisito-status {{ $docente->archivo_titulo ? 'status-uploaded' : 'status-pending' }}">
-                {{ $docente->archivo_titulo ? '✓ Documento subido' : '⏳ Pendiente' }}
+                {{ $docente->archivo_titulo ? '✓ Documento subido' : 'Pendiente' }}
             </div>
 
             @if($docente->archivo_titulo)
@@ -40,7 +39,7 @@
                 <div class="file-upload-area mb-3 {{ $docente->archivo_titulo ? 'has-file' : '' }}">
                     <input type="file" name="archivo_titulo" class="file-input" accept=".pdf" {{ $docente->archivo_titulo ? '' : 'required' }}>
                     <label class="file-label">
-                        <span class="file-icon">📄</span>
+                        <span class="file-icon"></span>
                         <span class="file-text">{{ $docente->archivo_titulo ? 'Reemplazar PDF' : 'Seleccionar PDF' }}</span>
                         <span class="file-hint">PDF, máximo 5MB</span>
                     </label>
@@ -55,12 +54,11 @@
                 @if($docente->archivo_maestria)
                     <div class="requisito-check">✓</div>
                 @else
-                    📚
                 @endif
             </div>
             <div class="requisito-title">Maestría (Opcional)</div>
             <div class="requisito-status {{ $docente->archivo_maestria ? 'status-uploaded' : 'status-pending' }}">
-                {{ $docente->archivo_maestria ? '✓ Documento subido' : '⏳ Opcional' }}
+                {{ $docente->archivo_maestria ? '✓ Documento subido' : 'Opcional' }}
             </div>
 
             @if($docente->archivo_maestria)
@@ -78,7 +76,7 @@
                 <div class="file-upload-area mb-3 {{ $docente->archivo_maestria ? 'has-file' : '' }}">
                     <input type="file" name="archivo_maestria" class="file-input" accept=".pdf">
                     <label class="file-label">
-                        <span class="file-icon">📄</span>
+                        <span class="file-icon"></span>
                         <span class="file-text">{{ $docente->archivo_maestria ? 'Reemplazar PDF' : 'Seleccionar PDF' }}</span>
                         <span class="file-hint">PDF, máximo 5MB</span>
                     </label>
@@ -93,12 +91,11 @@
                 @if($docente->archivo_diplomado)
                     <div class="requisito-check">✓</div>
                 @else
-                    📜
                 @endif
             </div>
             <div class="requisito-title">Diplomado (Opcional)</div>
             <div class="requisito-status {{ $docente->archivo_diplomado ? 'status-uploaded' : 'status-pending' }}">
-                {{ $docente->archivo_diplomado ? '✓ Documento subido' : '⏳ Opcional' }}
+                {{ $docente->archivo_diplomado ? '✓ Documento subido' : 'Opcional' }}
             </div>
 
             @if($docente->archivo_diplomado)
@@ -116,7 +113,7 @@
                 <div class="file-upload-area mb-3 {{ $docente->archivo_diplomado ? 'has-file' : '' }}">
                     <input type="file" name="archivo_diplomado" class="file-input" accept=".pdf">
                     <label class="file-label">
-                        <span class="file-icon">📄</span>
+                        <span class="file-icon"></span>
                         <span class="file-text">{{ $docente->archivo_diplomado ? 'Reemplazar PDF' : 'Seleccionar PDF' }}</span>
                         <span class="file-hint">PDF, máximo 5MB</span>
                     </label>

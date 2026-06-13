@@ -103,7 +103,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>🎓 Facultad de Informática y Computación</h1>
+        <h1>Facultad de Informática y Computación</h1>
         <h2>Curso Preuniversitario — {{ $titulo ?? 'Reporte' }}</h2>
         <div class="date">Generado el {{ now()->format('d/m/Y H:i') }}</div>
     </div>
@@ -151,6 +151,90 @@
                         <td>{{ $d['total_estudiantes'] }}</td>
                         <td>{{ $d['aprobados'] }}</td>
                         <td>{{ $d['porcentaje'] }}%</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif(isset($datos['rendimiento']))
+        <h3>Rendimiento por Grupo</h3>
+        @if(isset($datos['grupo']))
+            <p>Grupo: <strong>{{ $datos['grupo']->nombre }}</strong> — Turno: <strong>{{ $datos['grupo']->turno?->nombre ?? '—' }}</strong></p>
+        @endif
+        <div style="margin-bottom: 20px; width: 100%;">
+            <div class="stats-box"><div class="value">{{ $datos['rendimiento']['total'] }}</div><div class="label">Total</div></div>
+            <div class="stats-box"><div class="value">{{ $datos['rendimiento']['aprobados'] }}</div><div class="label">Aprobados</div></div>
+            <div class="stats-box"><div class="value">{{ $datos['rendimiento']['reprobados'] }}</div><div class="label">Reprobados</div></div>
+            <div class="stats-box"><div class="value">{{ $datos['rendimiento']['porcentaje_aprobacion'] }}%</div><div class="label">% Aprobación</div></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Estudiante</th>
+                    <th>CI</th>
+                    <th>Promedio</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($datos['rendimiento']['postulantes'] as $i => $p)
+                    <tr>
+                        <td>{{ $i + 1 }}</td>
+                        <td>{{ $p->nombre }}</td>
+                        <td>{{ $p->ci }}</td>
+                        <td><strong>{{ $p->promedio }}</strong></td>
+                        <td><span class="badge {{ $p->estado === 'APROBADO' ? 'badge-success' : 'badge-danger' }}">{{ $p->estado }}</span></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif(isset($datos['comparativa']))
+        <h3>Comparativa Histórica entre Gestiones</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Gestión</th>
+                    <th>Postulantes</th>
+                    <th>Admitidos</th>
+                    <th>No Admitidos</th>
+                    <th>Tasa de Admisión</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($datos['comparativa'] as $d)
+                    <tr>
+                        <td><strong>{{ $d->gestion }}</strong></td>
+                        <td>{{ $d->postulantes }}</td>
+                        <td><span class="badge badge-success">{{ $d->admitidos }}</span></td>
+                        <td><span class="badge badge-danger">{{ $d->no_admitidos }}</span></td>
+                        <td><strong>{{ $d->tasa_admision }}%</strong></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif(isset($datos['por_carrera']))
+        <h3>Admitidos por Carrera</h3>
+        @if(isset($datos['gestion']))
+            <p>Gestión: <strong>{{ $datos['gestion']->nombreCompleto }}</strong></p>
+        @endif
+        <table>
+            <thead>
+                <tr>
+                    <th>Carrera</th>
+                    <th>Cupo Máximo</th>
+                    <th>Admitidos</th>
+                    <th>1ª Opción</th>
+                    <th>2ª Opción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($datos['por_carrera'] as $d)
+                    <tr>
+                        <td><strong>{{ $d->carrera }}</strong></td>
+                        <td>{{ $d->cupo_maximo }}</td>
+                        <td><span class="badge badge-success">{{ $d->admitidos }}</span></td>
+                        <td>{{ $d->primera_opcion }}</td>
+                        <td>{{ $d->segunda_opcion }}</td>
                     </tr>
                 @endforeach
             </tbody>

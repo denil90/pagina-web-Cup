@@ -413,6 +413,7 @@ PROMPT;
             'titulo' => 'Comparativa entre Gestiones',
             'tipo' => 'comparativa',
             'datos' => $datos,
+            'gestiones' => $request->gestiones,
         ]);
     }
 
@@ -437,6 +438,7 @@ PROMPT;
             'tipo' => 'required|string',
             'id_gestion' => 'nullable|exists:gestion,id_gestion',
             'id_grupo' => 'nullable|exists:grupo,id_grupo',
+            'gestiones' => 'nullable|array',
         ]);
 
         $datos = $this->obtenerDatosReporte($request);
@@ -461,9 +463,19 @@ PROMPT;
                 'admitidos' => $this->reporteService->aprobadosPorGestion($request->id_gestion),
                 'gestion' => Gestion::find($request->id_gestion),
             ],
-            'rendimiento_grupo' => $this->reporteService->rendimientoPorGrupo($request->id_grupo),
+            'rendimiento_grupo' => [
+                'rendimiento' => $this->reporteService->rendimientoPorGrupo($request->id_grupo),
+                'grupo' => Grupo::with('turno')->find($request->id_grupo),
+            ],
             'docente_destacado' => [
                 'ranking' => $this->reporteService->docenteConMayorAprobacion($request->id_gestion),
+                'gestion' => Gestion::find($request->id_gestion),
+            ],
+            'comparativa' => [
+                'comparativa' => $this->admisionService->comparativaGestiones($request->gestiones ?? []),
+            ],
+            'por_carrera' => [
+                'por_carrera' => $this->reporteService->admitidosPorCarrera($request->id_gestion),
                 'gestion' => Gestion::find($request->id_gestion),
             ],
             default => [],

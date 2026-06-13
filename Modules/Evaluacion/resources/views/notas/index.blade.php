@@ -42,7 +42,7 @@
                                     @else
                                         <span class="text-muted">—</span>
                                     @endif
-                                    <a href="{{ route('admin.notas.registrar', [$p->id_postulante, $m->id_materia]) }}" class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:0.7rem;">✏️</a>
+                                    <a href="{{ route('admin.notas.registrar', [$p->id_postulante, $m->id_materia]) }}" class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:0.7rem;">Editar</a>
                                 </td>
                             @endforeach
                         </tr>

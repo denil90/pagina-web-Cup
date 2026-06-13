@@ -44,7 +44,7 @@
 
 @if($postulante->grupo && $postulante->grupo->docenteGrupos->isNotEmpty())
 <div class="card mt-3">
-    <div class="card-header"><h2>📋 Tu Horario de Clases</h2></div>
+    <div class="card-header"><h2>Tu Horario de Clases</h2></div>
     <div class="card-body">
         <p style="margin-bottom: 12px; color: var(--text-secondary);">
             Grupo <strong>{{ $postulante->grupo->nombre }}</strong> — Turno {{ $postulante->grupo->turno?->nombre ?? '' }} — {{ $postulante->grupo->aula?->nombre ?? '' }}

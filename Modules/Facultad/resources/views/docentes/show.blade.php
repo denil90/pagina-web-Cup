@@ -85,7 +85,7 @@
                             </div>
                             <div>
                                 @if($docente->archivo_titulo)
-                                    <a href="{{ asset('storage/' . $docente->archivo_titulo) }}" target="_blank" class="btn btn-info btn-sm">📄 Ver Documento</a>
+                                    <a href="{{ asset('storage/' . $docente->archivo_titulo) }}" target="_blank" class="btn btn-info btn-sm">Ver Documento</a>
                                 @else
                                     <span class="badge badge-danger">No cargado</span>
                                 @endif
@@ -98,7 +98,7 @@
                             </div>
                             <div>
                                 @if($docente->archivo_maestria)
-                                    <a href="{{ asset('storage/' . $docente->archivo_maestria) }}" target="_blank" class="btn btn-info btn-sm">📄 Ver Documento</a>
+                                    <a href="{{ asset('storage/' . $docente->archivo_maestria) }}" target="_blank" class="btn btn-info btn-sm">Ver Documento</a>
                                 @else
                                     <span class="badge badge-secondary">No cargado</span>
                                 @endif
@@ -111,7 +111,7 @@
                             </div>
                             <div>
                                 @if($docente->archivo_diplomado)
-                                    <a href="{{ asset('storage/' . $docente->archivo_diplomado) }}" target="_blank" class="btn btn-info btn-sm">📄 Ver Documento</a>
+                                    <a href="{{ asset('storage/' . $docente->archivo_diplomado) }}" target="_blank" class="btn btn-info btn-sm">Ver Documento</a>
                                 @else
                                     <span class="badge badge-secondary">No cargado</span>
                                 @endif

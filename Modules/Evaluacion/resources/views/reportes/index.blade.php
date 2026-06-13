@@ -7,7 +7,7 @@
     {{-- Aprobados por Gestión --}}
     <div class="card">
         <div class="card-body">
-            <h3 style="color:var(--accent);margin-bottom:12px;">📋 Admitidos por Gestión</h3>
+            <h3 style="color:var(--accent);margin-bottom:12px;">Admitidos por Gestión</h3>
             <p class="text-muted mb-2">Lista de todos los admitidos en una gestión con nota, carrera y opción de ingreso.</p>
             <form method="POST" action="{{ route('admin.reportes.aprobados') }}">
                 @csrf
@@ -24,7 +24,7 @@
     {{-- Rendimiento por Grupo --}}
     <div class="card">
         <div class="card-body">
-            <h3 style="color:var(--accent);margin-bottom:12px;">📊 Rendimiento por Grupo</h3>
+            <h3 style="color:var(--accent);margin-bottom:12px;">Rendimiento por Grupo</h3>
             <p class="text-muted mb-2">% de aprobación, lista de postulantes con notas por grupo.</p>
             <form method="POST" action="{{ route('admin.reportes.rendimiento') }}">
                 @csrf
@@ -41,7 +41,7 @@
     {{-- Ranking Docentes --}}
     <div class="card">
         <div class="card-body">
-            <h3 style="color:var(--accent);margin-bottom:12px;">🏆 Ranking de Docentes</h3>
+            <h3 style="color:var(--accent);margin-bottom:12px;">Ranking de Docentes</h3>
             <p class="text-muted mb-2">Docente con mayor porcentaje de aprobados en sus grupos.</p>
             <form method="POST" action="{{ route('admin.reportes.docente') }}">
                 @csrf
@@ -58,7 +58,7 @@
     {{-- Admitidos por Carrera --}}
     <div class="card">
         <div class="card-body">
-            <h3 style="color:var(--accent);margin-bottom:12px;">🎯 Admitidos por Carrera</h3>
+            <h3 style="color:var(--accent);margin-bottom:12px;">Admitidos por Carrera</h3>
             <p class="text-muted mb-2">Cantidad de admitidos vs cupo por carrera.</p>
             <form method="POST" action="{{ route('admin.reportes.carreras') }}">
                 @csrf
@@ -75,7 +75,7 @@
     {{-- Comparativa --}}
     <div class="card" style="grid-column: span 2;">
         <div class="card-body">
-            <h3 style="color:var(--accent);margin-bottom:12px;">📈 Comparativa entre Gestiones</h3>
+            <h3 style="color:var(--accent);margin-bottom:12px;">Comparativa entre Gestiones</h3>
             <p class="text-muted mb-2">Compara postulantes vs admitidos entre diferentes gestiones.</p>
             <form method="POST" action="{{ route('admin.reportes.comparativa') }}">
                 @csrf

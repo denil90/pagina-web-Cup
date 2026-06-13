@@ -81,6 +81,7 @@ class ReporteService
         }
 
         $datos['titulo'] = $datos['titulo'] ?? 'Reporte CUP';
+        $datos['datos'] = $datos;
         $pdf = Pdf::loadView('evaluacion::pdf.reporte', $datos);
         return $pdf->download("{$nombreArchivo}.pdf");
     }

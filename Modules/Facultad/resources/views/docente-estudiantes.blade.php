@@ -59,7 +59,7 @@
                             </td>
                             <td>
                                 <a href="{{ route('docente.estudiantes.materia.nota', [$p->id_postulante, $materia->id_materia]) }}" class="btn btn-secondary btn-sm">
-                                    ✏️ Registrar Notas
+                                    Registrar Notas
                                 </a>
                             </td>
                         </tr>

@@ -10,7 +10,7 @@
     <div class="card-body">
         @if($gestiones->isEmpty())
             <div class="empty-state">
-                <div class="icon">📅</div>
+                <div class="icon"></div>
                 <h3>No hay gestiones registradas</h3>
             </div>
         @else

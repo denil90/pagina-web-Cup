@@ -287,19 +287,42 @@ class EstudiantesSeeder extends Seeder
             }
         }
 
-        $getOrCreateAvailableGroup = function ($turnoName) use ($turnoIds, $horarioIds, $getOrCreateAvailableDocente, $aulas) {
+        // Estructuras en memoria para almacenar la cantidad de alumnos asignados por grupo y gestión
+        $groupCounts = [];
+        $turnoGrupos = [];
+
+        $getOrCreateAvailableGroup = function ($turnoName, $gestionId) use ($turnoIds, $horarioIds, $getOrCreateAvailableDocente, $aulas, &$groupCounts, &$turnoGrupos) {
             $tId = $turnoIds[$turnoName];
 
-            // Buscar un grupo existente con espacio disponible (inscritos < 70)
-            $grupos = DB::table('grupo')->where('id_turno', $tId)->orderBy('id_grupo')->get();
-            foreach ($grupos as $gr) {
-                $inscritos = DB::table('postulante')->where('id_grupo', $gr->id_grupo)->count();
-                if ($inscritos < 70) {
-                    return $gr->id_grupo;
+            // Si los datos en memoria para esta gestión no se han inicializado, los cargamos una sola vez de la BD
+            if (!isset($groupCounts[$gestionId])) {
+                $groupCounts[$gestionId] = DB::table('postulante')
+                    ->where('id_gestion', $gestionId)
+                    ->select('id_grupo', DB::raw('count(*) as total'))
+                    ->groupBy('id_grupo')
+                    ->pluck('total', 'id_grupo')
+                    ->toArray();
+
+                $turnoGrupos[$gestionId] = [];
+                foreach ($turnoIds as $tName => $turnoIdVal) {
+                    $turnoGrupos[$gestionId][$tName] = DB::table('grupo')
+                        ->where('id_turno', $turnoIdVal)
+                        ->orderBy('id_grupo')
+                        ->pluck('id_grupo')
+                        ->toArray();
                 }
             }
 
-            // Crear nuevo grupo si todos están llenos
+            // 1. Buscar un grupo existente con espacio disponible en memoria (< 70)
+            foreach ($turnoGrupos[$gestionId][$turnoName] as $grId) {
+                $count = $groupCounts[$gestionId][$grId] ?? 0;
+                if ($count < 70) {
+                    $groupCounts[$gestionId][$grId] = $count + 1;
+                    return $grId;
+                }
+            }
+
+            // 2. Crear nuevo grupo si todos los de este turno están llenos
             $prefix = ($turnoName === 'Mañana') ? 'M' : (($turnoName === 'Tarde') ? 'T' : 'N');
             $existingNames = DB::table('grupo')
                 ->where('nombre', 'like', $prefix . '%')
@@ -349,6 +372,10 @@ class EstudiantesSeeder extends Seeder
                     'id_horario' => $hId
                 ]);
             }
+
+            // Registrar el nuevo grupo en nuestras variables de memoria
+            $turnoGrupos[$gestionId][$turnoName][] = $grId;
+            $groupCounts[$gestionId][$grId] = 1;
 
             return $grId;
         };
@@ -583,7 +610,7 @@ class EstudiantesSeeder extends Seeder
                     $turnoElegido = array_rand($turnoIds); // 'Mañana', 'Tarde' o 'Noche'
                     $idTurnoPreferido = $turnoIds[$turnoElegido];
 
-                    $idGrupoElegido = $getOrCreateAvailableGroup($turnoElegido);
+                    $idGrupoElegido = $getOrCreateAvailableGroup($turnoElegido, $gestionId);
 
                     $idCarrera1 = $carreras[array_rand($carreras)];
                     $idCarrera2 = $carreras[array_rand($carreras)];

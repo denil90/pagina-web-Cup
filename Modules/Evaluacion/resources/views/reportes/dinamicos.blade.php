@@ -2,6 +2,13 @@
 @section('title', 'Reportes Dinámicos')
 @section('header', 'Estadísticas y Reportes Dinámicos')
 
+@section('header-actions')
+    <div class="btn-group" id="dynamicReportActions" style="display: flex; gap: 8px;">
+        <button id="btnExportPdf" class="btn btn-primary btn-sm" onclick="exportPageToPDF()">Exportar PDF (Captura)</button>
+        <button id="btnExportCsv" class="btn btn-success btn-sm" onclick="exportTableToCSV('aiResultsTable', 'resultados_consulta_ia.csv')" style="display: none;">Exportar CSV</button>
+    </div>
+@endsection
+
 @push('styles')
 <style>
     /* Constrain layout to prevent horizontal page scrolling and overlapping under the fixed sidebar */
@@ -367,7 +374,7 @@
     <!-- 1. Historical comparison chart (Full Width) -->
     <div class="card" style="width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;">
         <div class="card-header">
-            <h2>📈 Comparativa Histórica de Postulantes vs Admitidos</h2>
+            <h2>Comparativa Histórica de Postulantes vs Admitidos</h2>
         </div>
         <div class="card-body" style="box-sizing: border-box; overflow: hidden; width: 100%; max-width: 100%;">
             <div style="position: relative; height: 320px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box;">
@@ -381,7 +388,7 @@
         <!-- Careers quota chart -->
         <div class="card" style="flex: 1 1 450px; min-width: 0; box-sizing: border-box; overflow: hidden;">
             <div class="card-header">
-                <h2>🎯 Admitidos vs Cupo Máximo por Carrera</h2>
+                <h2>Admitidos vs Cupo Máximo por Carrera</h2>
             </div>
             <div class="card-body" style="box-sizing: border-box; overflow: hidden; width: 100%; max-width: 100%;">
                 <div style="position: relative; height: 280px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box;">
@@ -393,7 +400,7 @@
         <!-- Groups capacity chart -->
         <div class="card" style="flex: 1 1 450px; min-width: 0; box-sizing: border-box; overflow: hidden;">
             <div class="card-header">
-                <h2>👥 Capacidad y Alumnos Inscritos por Grupo</h2>
+                <h2>Capacidad y Alumnos Inscritos por Grupo</h2>
             </div>
             <div class="card-body" style="box-sizing: border-box; overflow: hidden; width: 100%; max-width: 100%;">
                 <div style="position: relative; height: 280px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box;">
@@ -408,7 +415,7 @@
         <!-- Teacher Ranking Chart -->
         <div class="card" style="flex: 1 1 450px; min-width: 0; box-sizing: border-box; overflow: hidden;">
             <div class="card-header">
-                <h2>🏆 Ranking de Aprobación por Docente</h2>
+                <h2>Ranking de Aprobación por Docente</h2>
             </div>
             <div class="card-body" style="box-sizing: border-box; overflow: hidden; width: 100%; max-width: 100%;">
                 @if(empty($docentesRanking))
@@ -426,7 +433,7 @@
         <!-- General Admission Rate Doughnut Chart -->
         <div class="card" style="flex: 1 1 450px; min-width: 0; box-sizing: border-box; overflow: hidden;">
             <div class="card-header">
-                <h2>📊 Distribución General de Admisión</h2>
+                <h2>Distribución General de Admisión</h2>
             </div>
             <div class="card-body" style="box-sizing: border-box; overflow: hidden; width: 100%; max-width: 100%; display: flex; justify-content: center; align-items: center;">
                 @if($totalPostulantesFiltrados == 0)
@@ -446,7 +453,7 @@
 <!-- AI Voice Assistant Card -->
 <div class="ai-assistant-card" style="margin-top: 24px; width: 100%; min-width: 0; box-sizing: border-box;">
     <div class="ai-header">
-        <h2>🎙️ Asistente de Reportes por Voz</h2>
+        <h2>Asistente de Reportes por Voz</h2>
         <span class="ai-badge">Gemini IA</span>
     </div>
     <div class="ai-body">
@@ -457,7 +464,7 @@
             </div>
             <div class="ai-btn-group">
                 <button type="button" class="btn-mic" id="btnMic" title="Hablar por micrófono">
-                    🎤
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                 </button>
                 <button type="button" class="btn-ai-send" id="btnAiSend" title="Enviar consulta">
                     ▶
@@ -471,19 +478,19 @@
         </div>
 
         <div class="ai-examples" id="aiExamples">
-            <span class="ai-example-chip" data-prompt="¿Cuántos postulantes hay por ciudad?">📊 Postulantes por ciudad</span>
-            <span class="ai-example-chip" data-prompt="Muéstrame los 10 postulantes con mejor nota final">🏆 Top 10 mejores notas</span>
-            <span class="ai-example-chip" data-prompt="¿Cuántos admitidos hay por carrera?">🎯 Admitidos por carrera</span>
-            <span class="ai-example-chip" data-prompt="¿Cuántos estudiantes tiene cada grupo?">👥 Estudiantes por grupo</span>
-            <span class="ai-example-chip" data-prompt="Lista de docentes con su título profesional">👨‍🏫 Docentes y títulos</span>
-            <span class="ai-example-chip" data-prompt="¿Cuántos pagos se han completado?">💰 Pagos completados</span>
+            <span class="ai-example-chip" data-prompt="¿Cuántos postulantes hay por ciudad?">Postulantes por ciudad</span>
+            <span class="ai-example-chip" data-prompt="Muéstrame los 10 postulantes con mejor nota final">Top 10 mejores notas</span>
+            <span class="ai-example-chip" data-prompt="¿Cuántos admitidos hay por carrera?">Admitidos por carrera</span>
+            <span class="ai-example-chip" data-prompt="¿Cuántos estudiantes tiene cada grupo?">Estudiantes por grupo</span>
+            <span class="ai-example-chip" data-prompt="Lista de docentes con su título profesional">Docentes y títulos</span>
+            <span class="ai-example-chip" data-prompt="¿Cuántos pagos se han completado?">Pagos completados</span>
         </div>
 
         <!-- Results Panel -->
         <div class="ai-results-panel" id="aiResultsPanel">
             <div class="ai-explanation" id="aiExplanation"></div>
 
-            <div class="ai-sql-toggle" id="aiSqlToggle" onclick="document.getElementById('aiSqlBlock').style.display = document.getElementById('aiSqlBlock').style.display === 'none' ? 'block' : 'none';">🔍 Ver/ocultar consulta SQL generada</div>
+            <div class="ai-sql-toggle" id="aiSqlToggle" onclick="document.getElementById('aiSqlBlock').style.display = document.getElementById('aiSqlBlock').style.display === 'none' ? 'block' : 'none';">Ver/ocultar consulta SQL generada</div>
             <div class="ai-sql-block" id="aiSqlBlock" style="display: none;"></div>
 
             <div id="aiTotalBadge" class="ai-total-badge" style="display: none;"></div>
@@ -502,6 +509,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Colores del tema del sistema
@@ -837,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isRecording = true;
             userStoppedManually = false;
             btnMic.classList.add('recording');
-            setStatus('listening', '🎤 Escuchando... Habla ahora (clic en 🎤 para detener)');
+            setStatus('listening', 'Escuchando... Habla ahora (clic en el micrófono para detener)');
         };
 
         recognition.onresult = (event) => {
@@ -860,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // After receiving final results, start a 2.5s silence timer
             if (finalTranscript) {
-                setStatus('listening', '🎤 Escuchando... (se enviará automáticamente al dejar de hablar)');
+                setStatus('listening', 'Escuchando... (se enviará automáticamente al dejar de hablar)');
                 silenceTimer = setTimeout(() => {
                     if (isRecording) {
                         userStoppedManually = false;
@@ -878,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const text = aiPrompt.value.trim();
             if (text) {
                 // Auto-send the query
-                setStatus('success', '✅ Dictado completado. Enviando consulta...');
+                setStatus('success', 'Dictado completado. Enviando consulta...');
                 setTimeout(() => sendAiQuery(text), 300);
             } else {
                 setStatus('', 'Listo — Habla o escribe tu pregunta');
@@ -891,16 +899,16 @@ document.addEventListener('DOMContentLoaded', function() {
             btnMic.classList.remove('recording');
 
             if (event.error === 'no-speech') {
-                setStatus('error', '⚠️ No se detectó voz. Asegúrate de que el micrófono funcione e intenta de nuevo.');
+                setStatus('error', 'No se detectó voz. Asegúrate de que el micrófono funcione e intenta de nuevo.');
             } else if (event.error === 'not-allowed') {
-                setStatus('error', '⛔ Permiso de micrófono denegado. Haz clic en el ícono 🔒 de la barra de direcciones y permite el micrófono.');
+                setStatus('error', 'Permiso de micrófono denegado. Haz clic en el ícono de la barra de direcciones y permite el micrófono.');
             } else if (event.error === 'aborted') {
                 // User stopped manually, don't show error
                 if (!aiPrompt.value.trim()) {
                     setStatus('', 'Listo — Habla o escribe tu pregunta');
                 }
             } else {
-                setStatus('error', '⚠️ Error de reconocimiento: ' + event.error);
+                setStatus('error', 'Error de reconocimiento: ' + event.error);
             }
         };
     } else {
@@ -909,12 +917,12 @@ document.addEventListener('DOMContentLoaded', function() {
         btnMic.style.borderColor = 'rgba(255, 255, 255, 0.15)';
         btnMic.style.background = 'rgba(255, 255, 255, 0.02)';
         btnMic.style.color = '#757575';
-        btnMic.innerHTML = '🔇';
+        btnMic.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.18 1.6"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>';
         btnMic.title = 'Reconocimiento de voz no disponible en este navegador (como Brave). Usa Google Chrome/Edge o escribe tu consulta.';
         
         // Agregar un aviso explicativo en el status
         setTimeout(() => {
-            setStatus('', 'ℹ️ Dictado por voz no disponible en este navegador (Brave). Escribe tu consulta manualmente o usa Chrome/Edge.');
+            setStatus('', 'Dictado por voz no disponible en este navegador (Brave). Escribe tu consulta manualmente o usa Chrome/Edge.');
         }, 500);
     }
 
@@ -933,7 +941,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 recognition.start();
             } catch (e) {
                 // Already started, ignore
-                setStatus('error', '⚠️ El micrófono ya está activo o no está disponible.');
+                setStatus('error', 'El micrófono ya está activo o no está disponible.');
             }
         }
     });
@@ -942,7 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnAiSend.addEventListener('click', () => {
         const prompt = aiPrompt.value.trim();
         if (!prompt) {
-            setStatus('error', '⚠️ Escribe o dicta una pregunta primero.');
+            setStatus('error', 'Escribe o dicta una pregunta primero.');
             return;
         }
         sendAiQuery(prompt);
@@ -970,9 +978,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function sendAiQuery(prompt) {
-        setStatus('processing', '🤖 Analizando con Gemini IA...');
+        setStatus('processing', 'Analizando con Gemini IA...');
         btnAiSend.disabled = true;
         aiResultsPanel.classList.remove('visible');
+        const exportCsvBtn = document.getElementById('btnExportCsv');
+        if (exportCsvBtn) exportCsvBtn.style.display = 'none';
 
         try {
             const response = await fetch('{{ route("admin.reportes.dinamicos.ai-query") }}', {
@@ -988,7 +998,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.error) {
-                setStatus('error', '❌ ' + data.message);
+                setStatus('error', data.message);
                 return;
             }
 
@@ -996,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', function() {
             aiResultsPanel.classList.add('visible');
 
             // Explanation
-            aiExplanation.innerHTML = '<span class="ai-explain-icon">💡</span> ' + escapeHtml(data.explicacion);
+            aiExplanation.innerHTML = escapeHtml(data.explicacion);
 
             // SQL block
             aiSqlBlock.textContent = data.sql || '(sin consulta)';
@@ -1009,7 +1019,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.columnas && data.columnas.length > 0 && data.resultados && data.resultados.length > 0) {
                 // Total badge
                 aiTotalBadge.style.display = 'inline-flex';
-                aiTotalBadge.innerHTML = '📋 ' + data.total + ' resultado' + (data.total !== 1 ? 's' : '') + ' encontrado' + (data.total !== 1 ? 's' : '');
+                aiTotalBadge.innerHTML = data.total + ' resultado' + (data.total !== 1 ? 's' : '') + ' encontrado' + (data.total !== 1 ? 's' : '');
 
                 // Headers
                 const headRow = document.createElement('tr');
@@ -1031,15 +1041,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     aiTableBody.appendChild(tr);
                 });
 
-                setStatus('success', '✅ Consulta ejecutada exitosamente — ' + data.total + ' resultados');
+                if (exportCsvBtn) exportCsvBtn.style.display = 'inline-block';
+                setStatus('success', 'Consulta ejecutada exitosamente — ' + data.total + ' resultados');
             } else {
                 aiTotalBadge.style.display = 'inline-flex';
-                aiTotalBadge.innerHTML = '📋 0 resultados encontrados';
-                setStatus('success', '✅ Consulta ejecutada — Sin resultados para los filtros indicados');
+                aiTotalBadge.innerHTML = '0 resultados encontrados';
+                setStatus('success', 'Consulta ejecutada — Sin resultados para los filtros indicados');
             }
 
         } catch (err) {
-            setStatus('error', '❌ Error de conexión: ' + err.message);
+            setStatus('error', 'Error de conexión: ' + err.message);
         } finally {
             btnAiSend.disabled = false;
         }
@@ -1050,5 +1061,58 @@ document.addEventListener('DOMContentLoaded', function() {
         div.textContent = text;
         return div.innerHTML;
     }
+
+    window.exportTableToCSV = function(tableId, filename) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+        
+        let csv = [];
+        const rows = table.querySelectorAll("tr");
+        
+        for (let i = 0; i < rows.length; i++) {
+            const row = [];
+            const cols = rows[i].querySelectorAll("td, th");
+            
+            for (let j = 0; j < cols.length; j++) {
+                let data = cols[j].innerText.replace(/"/g, '""');
+                row.push('"' + data + '"');
+            }
+            
+            csv.push(row.join(";"));
+        }
+        
+        const csvContent = "\uFEFF" + csv.join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+
+    window.exportPageToPDF = function() {
+        const element = document.querySelector('.main-content');
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     'reporte_dinamico.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        
+        const btnGroup = document.getElementById('dynamicReportActions');
+        
+        // Ocultar botones temporalmente para la captura del PDF
+        if (btnGroup) btnGroup.style.opacity = '0';
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (btnGroup) btnGroup.style.opacity = '1';
+        });
+    };
 </script>
 @endpush

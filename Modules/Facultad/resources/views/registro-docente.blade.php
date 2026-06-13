@@ -11,7 +11,7 @@
         <div class="auth-card wide">
             <a href="{{ route('login') }}?tipo=docente" class="back-to-portal">← Volver al Inicio de Sesión</a>
 
-            <div class="auth-title">👨‍🏫 Postulación Docente</div>
+            <div class="auth-title">Postulación Docente</div>
             <p class="auth-subtitle">Complete sus datos para postular como docente del Curso Preuniversitario</p>
 
             @if($errors->any())
@@ -98,7 +98,7 @@
 
 
                 <div class="alert alert-info mt-2" style="font-size: 0.85rem;">
-                    📋 Después de registrarse, deberá subir los documentos de respaldo (título profesional, maestría, diplomado) para que un administrador verifique su postulación.
+                    Después de registrarse, deberá subir los documentos de respaldo (título profesional, maestría, diplomado) para que un administrador verifique su postulación.
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">Registrar Postulación</button>
