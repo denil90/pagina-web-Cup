@@ -231,8 +231,15 @@ Si no puedes generar una consulta válida, responde:
 PROMPT;
 
         try {
-            // Llamar a la API de Gemini con hasta 3 reintentos en caso de fallos temporales
-            $response = Http::retry(3, 2000)->timeout(30)->post(
+            // Llamar a la API de Gemini con hasta 3 reintentos solo en fallos de servidor (5xx)
+            // No reintentar en 429 (cuota) ni 400 (auth) para no desperdiciar la cuota gratuita
+            $response = Http::retry(3, 2000, function (\Exception $exception, $request) {
+                // Solo reintentar si es un error de servidor (5xx), NO en 429 o 400
+                if ($exception instanceof \Illuminate\Http\Client\RequestException) {
+                    return $exception->response->status() >= 500;
+                }
+                return false;
+            })->timeout(30)->post(
                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}",
                 [
                     'contents' => [
