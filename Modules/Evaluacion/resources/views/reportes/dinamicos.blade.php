@@ -509,7 +509,8 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Colores del tema del sistema
@@ -1095,25 +1096,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    window.exportPageToPDF = function() {
-        const element = document.querySelector('.main-content');
-        const opt = {
-            margin:       [10, 10, 10, 10],
-            filename:     'reporte_dinamico.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#0f1117' },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
-            pagebreak:    { mode: ['css', 'legacy'], avoid: '.card' }
-        };
-        
+    window.exportPageToPDF = async function() {
         const btnGroup = document.getElementById('dynamicReportActions');
-        
-        // Ocultar botones temporalmente para la captura del PDF
-        if (btnGroup) btnGroup.style.opacity = '0';
-        
-        html2pdf().set(opt).from(element).save().then(() => {
-            if (btnGroup) btnGroup.style.opacity = '1';
-        });
+        if (btnGroup) btnGroup.style.display = 'none';
+
+        try {
+            // Desestructurar jsPDF de la ventana global
+            const { jsPDF } = window.jspdf;
+            // Orientación apaisada (l) para que las gráficas quepan mejor
+            const pdf = new jsPDF('l', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            
+            // Seleccionar todas las tarjetas que contengan información o gráficas
+            const cards = document.querySelectorAll('.card');
+            let firstPage = true;
+
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                
+                // Si la tarjeta está oculta o es el filtro, la podemos ignorar
+                if (card.style.display === 'none' || card.offsetHeight === 0) continue;
+
+                // Forzar color de fondo oscuro de las tarjetas
+                const originalBg = card.style.background;
+                card.style.background = '#1a1d2e';
+
+                // Capturar como "foto"
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#1a1d2e', // Fondo del canvas
+                    logging: false
+                });
+
+                // Restaurar fondo
+                card.style.background = originalBg;
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                
+                // Calcular tamaño de la imagen en el PDF con márgenes de 10mm
+                const margin = 10;
+                const availableWidth = pdfWidth - (margin * 2);
+                let imgWidth = availableWidth;
+                let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // Si la imagen calculada es más alta que la página (poco probable en apaisado pero por si acaso)
+                if (imgHeight > (pdfHeight - (margin * 2))) {
+                    imgHeight = pdfHeight - (margin * 2);
+                    imgWidth = (canvas.width * imgHeight) / canvas.height;
+                }
+
+                if (!firstPage) {
+                    pdf.addPage();
+                }
+
+                pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
+                firstPage = false;
+            }
+
+            pdf.save('reportes_estadisticos_cup.pdf');
+        } catch (error) {
+            console.error('Error al generar PDF:', error);
+            alert('Hubo un error al generar el PDF.');
+        } finally {
+            if (btnGroup) btnGroup.style.display = 'flex';
+        }
     };
 </script>
 @endpush
