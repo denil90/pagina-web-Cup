@@ -27,6 +27,12 @@ a2enmod mpm_prefork rewrite || true
 echo "Configurando puerto de escucha a ${PORT:-80}..."
 sed -i "s/80/${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
+# Limpiar caché de configuración para leer variables de entorno actualizadas de Railway
+echo "Limpiando caché de configuración..."
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
 # Arrancar Apache
 echo "Iniciando Apache..."
 exec apache2-foreground
