@@ -360,7 +360,7 @@ PROMPT;
     {
         $apiKey = config('services.gemini.key');
         if (empty($apiKey)) {
-            abort(422, 'La API Key de Gemini no está configurada. Agrega GEMINI_API_KEY en tu archivo .env');
+            throw new \RuntimeException('La API Key de Gemini no está configurada. Agrega GEMINI_API_KEY en las variables de entorno.');
         }
 
         return Http::retry(3, 2000, function (\Exception $exception, $request) {
@@ -395,7 +395,7 @@ PROMPT;
     {
         $apiKey = config('services.groq.key');
         if (empty($apiKey)) {
-            abort(422, 'La API Key de Groq no está configurada. Agrega GROQ_API_KEY en tu archivo .env');
+            throw new \RuntimeException('La API Key de Groq no está configurada. Agrega GROQ_API_KEY en las variables de entorno de Railway.');
         }
 
         return Http::retry(3, 2000, function (\Exception $exception, $request) {
