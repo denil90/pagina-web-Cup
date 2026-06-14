@@ -1101,8 +1101,9 @@ document.addEventListener('DOMContentLoaded', function() {
             margin:       [10, 10, 10, 10],
             filename:     'reporte_dinamico.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#0f1117' },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+            pagebreak:    { mode: ['css', 'legacy'], avoid: '.card' }
         };
         
         const btnGroup = document.getElementById('dynamicReportActions');
