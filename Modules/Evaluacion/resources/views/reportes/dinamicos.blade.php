@@ -454,7 +454,7 @@
 <div class="ai-assistant-card" style="margin-top: 24px; width: 100%; min-width: 0; box-sizing: border-box;">
     <div class="ai-header">
         <h2>Asistente de Reportes por Voz</h2>
-        <span class="ai-badge">Gemini IA</span>
+        <span class="ai-badge">{{ config('services.ai.provider', 'gemini') === 'groq' ? 'Groq / Llama 3' : 'Gemini IA' }}</span>
     </div>
     <div class="ai-body">
         <div class="ai-input-row">
@@ -979,7 +979,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function sendAiQuery(prompt) {
-        setStatus('processing', 'Analizando con Gemini IA...');
+        setStatus('processing', 'Analizando con {{ config('services.ai.provider', 'gemini') === 'groq' ? 'Groq / Llama 3' : 'Gemini' }} IA...');
         btnAiSend.disabled = true;
         aiResultsPanel.classList.remove('visible');
         const exportCsvBtn = document.getElementById('btnExportCsv');

@@ -168,21 +168,18 @@ class ReporteController extends Controller
     }
 
     /**
-     * Procesa una consulta en lenguaje natural usando la API de Gemini.
+     * Procesa una consulta en lenguaje natural usando IA (Gemini o Groq).
      * Convierte la pregunta del usuario en una consulta SQL segura de solo lectura.
+     * 
+     * Proveedores soportados (configurable via AI_PROVIDER en .env):
+     * - 'gemini' (default): Google Gemini API (requiere GEMINI_API_KEY)
+     * - 'groq': Groq Cloud con Llama 3 (requiere GROQ_API_KEY) — plan gratuito generoso
      */
     public function aiQuery(Request $request)
     {
         $request->validate(['prompt' => 'required|string|max:1000']);
 
-        $apiKey = config('services.gemini.key');
-        if (empty($apiKey)) {
-            return response()->json([
-                'error' => true,
-                'message' => 'La API Key de Gemini no está configurada. Agrega GEMINI_API_KEY en tu archivo .env',
-            ], 422);
-        }
-
+        $provider = strtolower(config('services.ai.provider', 'gemini'));
         $userPrompt = $request->input('prompt');
 
         // Construir el prompt del sistema con el esquema de la BD
@@ -231,38 +228,18 @@ Si no puedes generar una consulta válida, responde:
 PROMPT;
 
         try {
-            // Llamar a la API de Gemini con hasta 3 reintentos solo en fallos de servidor (5xx)
-            // No reintentar en 429 (cuota) ni 400 (auth) para no desperdiciar la cuota gratuita
-            $response = Http::retry(3, 2000, function (\Exception $exception, $request) {
-                // Solo reintentar si es un error de servidor (5xx), NO en 429 o 400
-                if ($exception instanceof \Illuminate\Http\Client\RequestException) {
-                    return $exception->response->status() >= 500;
-                }
-                return false;
-            })->timeout(30)->post(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}",
-                [
-                    'contents' => [
-                        [
-                            'role' => 'user',
-                            'parts' => [
-                                ['text' => $systemPrompt . "\n\nPregunta del usuario: " . $userPrompt],
-                            ],
-                        ],
-                    ],
-                    'generationConfig' => [
-                        'temperature' => 0.1,
-                        'maxOutputTokens' => 1024,
-                    ],
-                ]
-            );
+            // Llamar a la API de IA según el proveedor configurado
+            $response = $this->callAiProvider($provider, $systemPrompt, $userPrompt);
 
             if (!$response->successful()) {
-                Log::error('Gemini API error', ['status' => $response->status(), 'body' => $response->body()]);
+                Log::error('AI API error', ['provider' => $provider, 'status' => $response->status(), 'body' => $response->body()]);
                 
-                $message = 'Error al comunicarse con la API de Gemini. Código: ' . $response->status();
+                $message = "Error al comunicarse con la API de IA ({$provider}). Código: " . $response->status();
                 if ($response->status() === 429) {
-                    $message = 'Límite de solicitudes excedido (Error 429). El plan gratuito de Gemini tiene un límite de consultas por minuto. Por favor, espera un minuto y vuelve a intentarlo.';
+                    $message = 'Límite de solicitudes excedido (Error 429). Por favor, espera un minuto y vuelve a intentarlo.';
+                    if ($provider === 'gemini') {
+                        $message .= ' Tip: Puedes cambiar a Groq (gratis) configurando AI_PROVIDER=groq en las variables de entorno.';
+                    }
                 }
 
                 return response()->json([
@@ -271,8 +248,8 @@ PROMPT;
                 ], $response->status() === 429 ? 429 : 500);
             }
 
-            $body = $response->json();
-            $textContent = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            // Extraer el texto de la respuesta según el proveedor
+            $textContent = $this->extractTextFromResponse($provider, $response->json());
 
             // Limpiar posibles bloques de código markdown de la respuesta
             $textContent = trim($textContent);
@@ -363,6 +340,91 @@ PROMPT;
                 'message' => 'Error inesperado: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Llama a la API de IA según el proveedor configurado.
+     */
+    private function callAiProvider(string $provider, string $systemPrompt, string $userPrompt)
+    {
+        return match ($provider) {
+            'groq' => $this->callGroq($systemPrompt, $userPrompt),
+            default => $this->callGemini($systemPrompt, $userPrompt),
+        };
+    }
+
+    /**
+     * Llama a la API de Google Gemini.
+     */
+    private function callGemini(string $systemPrompt, string $userPrompt)
+    {
+        $apiKey = config('services.gemini.key');
+        if (empty($apiKey)) {
+            abort(422, 'La API Key de Gemini no está configurada. Agrega GEMINI_API_KEY en tu archivo .env');
+        }
+
+        return Http::retry(3, 2000, function (\Exception $exception, $request) {
+            if ($exception instanceof \Illuminate\Http\Client\RequestException) {
+                return $exception->response->status() >= 500;
+            }
+            return false;
+        })->timeout(30)->post(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}",
+            [
+                'contents' => [
+                    [
+                        'role' => 'user',
+                        'parts' => [
+                            ['text' => $systemPrompt . "\n\nPregunta del usuario: " . $userPrompt],
+                        ],
+                    ],
+                ],
+                'generationConfig' => [
+                    'temperature' => 0.1,
+                    'maxOutputTokens' => 1024,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Llama a la API de Groq (compatible con formato OpenAI).
+     * Groq ofrece modelos Llama 3 gratis con límites generosos (30 RPM).
+     */
+    private function callGroq(string $systemPrompt, string $userPrompt)
+    {
+        $apiKey = config('services.groq.key');
+        if (empty($apiKey)) {
+            abort(422, 'La API Key de Groq no está configurada. Agrega GROQ_API_KEY en tu archivo .env');
+        }
+
+        return Http::retry(3, 2000, function (\Exception $exception, $request) {
+            if ($exception instanceof \Illuminate\Http\Client\RequestException) {
+                return $exception->response->status() >= 500;
+            }
+            return false;
+        })->timeout(30)->withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+        ])->post('https://api.groq.com/openai/v1/chat/completions', [
+            'model' => 'llama-3.3-70b-versatile',
+            'messages' => [
+                ['role' => 'system', 'content' => $systemPrompt],
+                ['role' => 'user', 'content' => $userPrompt],
+            ],
+            'temperature' => 0.1,
+            'max_tokens' => 1024,
+        ]);
+    }
+
+    /**
+     * Extrae el texto de la respuesta según el formato del proveedor.
+     */
+    private function extractTextFromResponse(string $provider, array $body): string
+    {
+        return match ($provider) {
+            'groq' => $body['choices'][0]['message']['content'] ?? '',
+            default => $body['candidates'][0]['content']['parts'][0]['text'] ?? '',
+        };
     }
 
     public function aprobadosPorGestion(Request $request)
